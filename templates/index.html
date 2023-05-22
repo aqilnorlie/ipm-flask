@@ -24,6 +24,12 @@
   <link rel="stylesheet" href="../static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="../static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
+<style>
+  #overflowTest {
+  height: 300px;
+  overflow-y: auto;
+}
+</style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -79,21 +85,23 @@
             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">						
               <div class="card mb-3">
                   <div class="card-header">
-                      <h4><i class="fas fa-info-circle"></i></i>Project Detail</h4>
+                      <h4><i class="fas fa-info-circle"></i>Project Detail</h4>
                   </div>
-                  <div class="card-body">
+                  <div id="overflowTest" class="card-body">
                     <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <p class="card-text">"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."</p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
                   </div>
-                  <div class="card-header" id="cardHeaderLeft">
-                      <h4><i class="fas fa-solid fas fa-folder margin-for-icon"></i>Project Folder</h4>
+                  <!-- <div class="card" id="cardHeaderLeft"> -->
+                      <div class="card-header">
+                        <h4><i class="fas fa-solid fas fa-folder margin-for-icon"></i>Project Folder</h4>
+                      </div>
                       <div class="card-body">
                         <h5 class="card-title">Special title treatment</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                         <a href="#" class="btn btn-primary">Go somewhere</a>
                       </div>
-                  </div>
+                  <!-- </div> -->
               </div>
           </div>
           <!-- END: LEFT SIDE -->
@@ -101,23 +109,23 @@
             <!-- START: RIGHT SIDE -->
             <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
               <div class="card mb-3">
-                <div class="card-header">
-                  <h4><i class="fas fa-chart-bar"></i>Scope Progress</h4>
-                  <div class="card-body">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <div class="card-header">
+                    <h4><i class="fas fa-chart-bar"></i>Scope Progress</h4>
                   </div>
-                </div>
-                <div class="card-header" id="cardHeaderRight">
+                  <div class="card-body">
+                    <div class="chart">
+                      <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                    </div>
+                  </div>
+                    <div class="card-header" id="cardHeaderRight">
                       <h4><i class="fas fa-chart-bar"></i>Team Member Progress</h4>
+                    </div>
                       <div class="card-body">
                         <h5 class="card-title">Special title treatment</h5>
                         <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
                         <a href="#" class="btn btn-primary">Go somewhere</a>
                       </div>
                 </div>
-              </div>
               
             </div>
             <!-- END: RIGHT SIDE -->
@@ -230,6 +238,58 @@
 <script src="../static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="../static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="../static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script>
+   //-------------
+    //- BAR CHART -
+    //-------------
+
+    var areaChartData = {
+      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: [
+        {
+          label               : 'Digital Goods',
+          backgroundColor     : 'rgba(60,141,188,0.9)',
+          borderColor         : 'rgba(60,141,188,0.8)',
+          pointRadius          : false,
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : [28, 48, 40, 19, 86, 27, 90]
+        },
+        {
+          label               : 'Electronics',
+          backgroundColor     : 'rgba(210, 214, 222, 1)',
+          borderColor         : 'rgba(210, 214, 222, 1)',
+          pointRadius         : false,
+          pointColor          : 'rgba(210, 214, 222, 1)',
+          pointStrokeColor    : '#c1c7d1',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(220,220,220,1)',
+          data                : [65, 59, 80, 81, 56, 55, 40]
+        },
+      ]
+    }
+
+    var barChartCanvas = $('#barChart').get(0).getContext('2d')
+    var barChartData = $.extend(true, {}, areaChartData)
+    var temp0 = areaChartData.datasets[0]
+    var temp1 = areaChartData.datasets[1]
+    barChartData.datasets[0] = temp1
+    barChartData.datasets[1] = temp0
+
+    var barChartOptions = {
+      responsive              : true,
+      maintainAspectRatio     : false,
+      datasetFill             : false
+    }
+
+    new Chart(barChartCanvas, {
+      type: 'bar',
+      data: barChartData,
+      options: barChartOptions
+    })
+</script>
 
 </body>
 </html>
