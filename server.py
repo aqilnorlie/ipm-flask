@@ -9,13 +9,13 @@ con = oracledb.connect(user=os.environ.get("oracle_user"), password=os.environ.g
                        dsn=os.environ.get("oracle_dns"), port=os.environ.get("oracle_port"))
 print(con.is_healthy()) # check connection
 
-# cur = con.cursor()
-# cur.execute("select * from help")
-# res = cur.fetchall()
-# for i in res:
-#     print(i)
-# cur.close()
-# con.close()
+cur = con.cursor()
+cur.execute("select * from persons")
+res = cur.fetchall()
+for i in res:
+    print(i)
+cur.close()
+con.close()
 
 @app.route("/")
 def dashboard():
