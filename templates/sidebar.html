@@ -14,7 +14,7 @@
           <img src="../static/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="{{url_for('dashboard')}}" class="d-block"><i class="nav-icon fas fa-user"></i> Welcome {{ name }} !!</a>
         </div>
       </div>
 
@@ -50,7 +50,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{url_for('login')}}" class="nav-link">
+            <a href="{{url_for('logout')}}" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p>Log Out</p>
             </a>
