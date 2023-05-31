@@ -65,7 +65,7 @@ def register():
 @app.route("/",  methods=["GET", "POST"])
 def login():
     if "email" in session:
-        return redirect(url_for("dasboard"))
+        return redirect(url_for("dashboard"))
     
     if request.method == "POST":
         email = request.form["email"] # get data from email input
@@ -91,7 +91,7 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return render_template("profile.html")
+    return render_template("profile.html", name=session['fname'],lname=session['lname'], email=session['email'])
 
 if __name__ == "__main__":
     app.run(debug=True) # debug moode don't change parameter
