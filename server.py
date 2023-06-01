@@ -5,11 +5,13 @@ import oracledb
 import hashlib
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.environ.get("secret_key") #set your own secret key 
+app.config["SECRET_KEY"] = os.environ.get("secret_key") # set your own secret key 
 
 oracledb.init_oracle_client(lib_dir=r"C:\instantclient_21_10") # install oracle client and set variable
-con = oracledb.connect(user=os.environ.get("oracle_user"), password=os.environ.get("oracle_pass"), 
-                       dsn=os.environ.get("oracle_dns"), port=os.environ.get("oracle_port"))
+con = oracledb.connect(user=os.environ.get("oracle_user"), 
+                       password=os.environ.get("oracle_pass"), 
+                       dsn=os.environ.get("oracle_dns"), 
+                       port=os.environ.get("oracle_port"))
 
 print(con.is_healthy()) # check connection
 cur = con.cursor()
@@ -95,4 +97,3 @@ def profile():
 
 if __name__ == "__main__":
     app.run(debug=True) # debug moode don't change parameter
-
