@@ -1,295 +1,2011 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Project Management | Dashboard</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="../static/plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="../static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="../static/plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../static/dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="../static/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="../static/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="../static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="../static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>(ICT502) IPM | Dashboard</title>
+
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Font Awesome -->
+	<!-- <link rel="stylesheet" href="../static/plugins/fontawesome-free/css/all.min.css"> -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+	<!-- Ionicons -->
+	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- iCheck -->
+	<link rel="stylesheet" href="../static/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+	<!-- JQVMap -->
+	<link rel="stylesheet" href="../static/plugins/jqvmap/jqvmap.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="../static/dist/css/adminlte.min.css">
+	<!-- overlayScrollbars -->
+	<link rel="stylesheet" href="../static/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+	<!-- DataTables -->
+	<link rel="stylesheet" href="../static/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+	<link rel="stylesheet" href="../static/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+	<link rel="stylesheet" href="../static/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
 </head>
 <style>
-  #overflowTest {
-  height: 300px;
-  overflow-y: auto;
-}
+	.card-header {
+		background-color: rgba(0,0,0,.03);
+		border-top: 1px solid rgba(0,0,0,.125);
+		border-bottom: 1px solid rgba(0,0,0,.125);
+		color: #6b6b6b;
+	}
+
+	.checked {
+		color: orange;
+	}
+
+	.fa-star {
+		cursor: pointer;
+	}
+
+	.small-text {
+		font-size: 14px;
+	}
+
+	.select2-container {
+		width: 100% !important;
+		padding: 0;
+	}
+
+	.table td {
+		padding: .4rem !important;
+	}
+
+	.inbtn {
+		display: inline;
+		justify-content: center;
+		align-items: center;
+		/*width: 1%;*/
+		height: 1%;
+		margin-left: 5.5px;
+	}
+
+	tr.selected {
+		background-color: #e6e6e6;
+	}
+
+	th {
+		background-color: rgba(41, 156, 219, .3);
+		white-space: nowrap;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	#team_table th,
+	#team_table td {
+		border: 1px solid #e1e6ea !important;
+	}
+
+	.td-center {
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	.not-allowed {
+		cursor: not-allowed;
+	}
+
+	.margin-for-icon {
+		margin-right: 5px;
+	}
+
+	.projectSelectionTitle {
+		display: inline-block !important;
+		margin-right: 5px;
+	}
+
+	.projectSelectionDropdown {
+		padding: 0;
+		display: inline-block !important;
+		width: auto;
+	}
+
+	.overflowY {
+		overflow-y: auto;
+		/* height: 400px !important; */
+	}
+
+	.btnPadding {
+		padding-left: 4px;
+		padding-right: 4px;
+		padding-bottom: 0.1px;
+		padding-top: 0.1px;
+	}
+
+	.btnPaddingbtn {
+		padding-left: 6px;
+		padding-right: 6px;
+		padding-bottom: 0.1px;
+		padding-top: 0.1px;
+	}
+
+	.textareaDesc {
+		height: 150px !important;
+	}
+
+	.padding-team-member-table {
+		padding-left: 5px;
+	}
+
+	.file-link {
+		color: #0ca4ca;
+	}
+
+	.forAlert {
+		margin-bottom: 0px;
+		font-size: 12px;
+	}
+
+	.hidden {
+		display: none;
+	}
+
+	.no-data-tree-message {
+		display: none;
+		margin-top: 110px;
+		margin-bottom: 110px;
+	}
+
+	.project-manager-label {
+		font-weight: 500;
+	}
+
+	.project-manager-text {
+		background-color: rgb(233, 236, 239);
+		opacity: 1;
+	}
+
+	.paddingBtnAddProject {
+		padding-top: 2px;
+		padding-bottom: 2px;
+		padding-left: 4px;
+		padding-right: 4px;
+	}
 </style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
-<div class="wrapper">
+	<div class="wrapper">
 
-  <!-- Preloader -->
-  <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="../static/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-  </div>
+		<!-- Preloader -->
+		<div class="preloader flex-column justify-content-center align-items-center">
+			<img class="animation__shake" src="../static/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
+				width="60">
+		</div>
 
-  <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
-      </li>
-    </ul>
-  </nav>
-  <!-- /.navbar -->
+		<!-- Navbar -->
+		<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+			<!-- Left navbar links -->
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+				</li>
+				<li class="nav-item d-none d-sm-inline-block">
+					<a href="index3.html" class="nav-link">Home</a>
+				</li>
+			</ul>
+		</nav>
+		<!-- /.navbar -->
 
-    <!-- include sidebar file -->
-    {% include 'sidebar.html' %}
-    <!-- end include file -->
+		<!-- include sidebar file -->
+		{% include 'sidebar.html' %}
+		<!-- end include file -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-    <!-- /.content-header -->
+		<!-- Content Wrapper. Contains page content -->
+		<div class="content-wrapper">
+			<!-- Content Header (Page header) -->
+			<div class="content-header">
+				<div class="container-fluid">
+					<div class="row mb-2">
+						<div class="col-9">
+							<h1 class="main-title projectSelectionTitle">Project Selection:
+								<select name="sel_project" id="sel_project"
+									class="form-control form-control-sm projectSelectionDropdown">
+									{% for p in projects %}
+									<option value="{{p['ID']}}">{{p['NAME']}}</option>
+									{% endfor %}
+								</select>
+								<a role="button" href="#" id="btn-add-project" class="badge btn-primary paddingBtnAddProject"
+									data-toggle="modal" data-target="#addProject" title="Add project"><i
+										class="fa fa-plus fa-xs"></i></a>
+							</h1>
+						</div><!-- /.col -->
+						<div class="col-3">
+							<ol class="breadcrumb float-sm-right">
+								<li class="breadcrumb-item"><a href="#">Home</a></li>
+								<li class="breadcrumb-item active">Dashboard v1</li>
+							</ol>
+						</div><!-- /.col -->
+					</div><!-- /.row -->
+				</div><!-- /.container-fluid -->
+			</div>
+			<!-- /.content-header -->
 
-    <!-- Main content -->
-    <section>
-      <div class="container-fluid">
-        <div class="row">
-          	<!-- START: LEFT SIDE -->
-            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-5">						
-              <div class="card mb-3">
-                  <div class="card-header">
-                      <h4><i class="fas fa-info-circle"></i>Project Detail</h4>
-                  </div>
-                  <div id="overflowTest" class="card-body">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">"On the other hand, we denounce with righteous indignation and dislike men who are so beguiled and demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their duty through weakness of will, which is the same as saying through shrinking from toil and pain. These cases are perfectly simple and easy to distinguish. In a free hour, when our power of choice is untrammelled and when nothing prevents our being able to do what we like best, every pleasure is to be welcomed and every pain avoided. But in certain circumstances and owing to the claims of duty or the obligations of business it will frequently occur that pleasures have to be repudiated and annoyances accepted. The wise man therefore always holds in these matters to this principle of selection: he rejects pleasures to secure other greater pleasures, or else he endures pains to avoid worse pains."</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                  </div>
-                  <!-- <div class="card" id="cardHeaderLeft"> -->
-                      <div class="card-header">
-                        <h4><i class="fas fa-solid fas fa-folder margin-for-icon"></i>Project Folder</h4>
-                      </div>
-                      <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                      </div>
-                  <!-- </div> -->
-              </div>
-          </div>
-          <!-- END: LEFT SIDE -->
+			<!-- Main content -->
+			<section>
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-5">
+							<div class="card mb-3">
+								<div class="card-header">
+									<h4><i class="fas fa-info-circle"></i>Project Detail</h4>
+								</div>
+								<div class="card-body overflowY" id="cardTopLeft">
+									<div class="btn-group btn-group-sm ml-1" role="group">
+										<button type="button" id="add_scope_tree" class="btn btn-primary"
+											data-toggle="modal" data-target="#addScopeModal">Add Scope</button>
+									</div>
+									<div class='mt-3' id="project_tree"></div>
+									<hr id='hr_project_tree'>
+									<div class="row mb-3 mr-2">
+										<div class='col-4 pr-0 project-manager-label'>Project Manager:</div>
+										<div id='projectManagerText'
+											class='form-control form-control-sm col project-manager-text'></div>
+									</div>
+									<div class="row mb-1 mr-2">
+										<label for="team_table" class="col-12">Team Member<a role="button" id="btnAddTM"
+												href="#" class="btn btn-primary btn-sm inbtn btnPadding"
+												data-toggle="modal" data-target="#addTeam"
+												title="Add/Edit team member"><i
+													class="fa fa-user-pen fa-xs"></i></a></label>
+									</div>
+									<div class="row mr-2 padding-team-member-table">
+										<div class="col-12">
+											<ol id="team-member-list"></ol>
+										</div>
+										<div class="col-12">
+											<ul id='no-team-member-message'><li>No data to display</li></ul>
+										</div>
+									</div>
+								</div>
+								<div class="card-header" id="cardHeaderLeft">
+									<h4><i class="fas fa-solid fas fa-folder margin-for-icon"></i>Project Folder</h4>
+								</div>
+								<div class="card-body overflowY" id="cardBottomLeft">
+									<input type="hidden" id="fcreateFolderVal" value='0'>
+									<input type="hidden" id="fdownloadVal" value='0'>
+									<input type="hidden" id="fdeleteVal" value='0'>
+									<input type="hidden" id="feditVal" value='0'>
+									<input type="hidden" id="fdragVal" value='0'>
+									<input type="hidden" id="fsearchVal" value='0'>
+									<input type="hidden" id="fuploadVal" value='0'>
+									<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+										<div class="btn-group btn-group-sm" role="group">
+											<button type="button" class="btn btn-primary" id="fcreateFolderBtn" title="Create New Folder"><i class="fa-solid fa-folder-plus fa-xs"></i></button>
+											<button type="button" class="btn btn-primary" id="fuploadBtn" title="Upload File"><i class="fa-solid fa-upload fa-xs"></i></button>
+											<button type="button" class="btn btn-primary" id="fsearchBtn" title="Search For Files"><i class="fa-solid fa-magnifying-glass fa-xs"></i></button>
+										</div>
+										<div class="btn-group btn-group-sm ml-1" role="group">
+											<button type="button" class="btn btn-danger hidden" id="fclearInputBtn" title="Clear Input Box(es)"><i class="fa-solid fa-circle-xmark fa-xs"></i></button>
+										</div>
+										<div class="btn-group btn-group-sm ml-1" role="group">
+											<button type="button" class="btn btn-secondary" id="fdeleteBtn" title="Enable File Deletion"><i class="fa-solid fa-trash fa-xs"></i></button>
+											<button type="button" class="btn btn-success hidden" id="fconfirmDeleteBtn" title="Confirm File Deletion"><i class="fa-solid fa-check fa-xs"></i></button>
+											<button type="button" class="btn btn-secondary" id="fdownloadBtn" title="Enable File Downloading"><i class="fa-solid fa-download fa-xs"></i></button>
+										</div>
+										<div class="btn-group btn-group-sm ml-2" role="group">
+											<button type="button" class="btn btn-success" id="saveTreeBtn" title="Save/Update Project Folder"><i class="fa-solid fa-floppy-disk fa-xs"></i></button>
+											<button type="button" class="btn btn-secondary" id="feditBtn" title="Enable File Renaming"><i class="fa-solid fa-pencil fa-xs"></i></button>
+											<button type="button" class="btn btn-secondary" id="fdragBtn" title="Enable Drag and Drop"><i class="fa-solid fa-arrows-up-down-left-right fa-xs"></i></button>
+										</div>
+										<div class="btn-group btn-group-sm ml-2" role="group">
+											<button type="button" class="btn btn-secondary" id="fclearSelectedBtn" title="Clear Selected Files/Folders"><i class="fa-solid fa-square-minus fa-xs"></i></button>
+										</div>
+									</div>
+									<div id='errorFolderProject' class="hidden alert alert-danger alert-dismissible fade show" role="alert">
+										<p class='forAlert' id='errorFolderProjectContent'></p>
+										<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true">&times;</span>
+										</button>
+									</div>
+									<div id='successFolderProject' class="hidden alert alert-success alert-dismissible fade show" role="alert">
+										<p class='forAlert' id='successFolderProjectContent'></p>
+									</div>
+									<div class="input-group input-group-sm mb-3 border border-dark p-2 rounded" id='newFolderDiv' style='display:none'>
+										<input type="text" class="form-control" id="newFolderName" name="newFolderName" placeholder="Enter folder name.." autocomplete="off">
+										<div class="input-group-append">
+											<button type="button" class="btn btn-success" id="confirmCreateFolderBtn">Create Folder</button>
+										</div>
+										<p class='mb-0'><small><i><b>*1. If no existing folder is selected, will create a new root folder.<br>
+										*2. If an existing folder is selected, will create a new folder under the selected folder.<br>
+										*3. Only FOLDER can be a parent. FILE cannot be a parent.</b></i></small></p>
+									</div>
+									<form id='uploadFileForm' action="{{ url_for('dashboard') }}" method="post" enctype="multipart/form-data" class="mb-3 border border-dark p-2 rounded" style='display:none'>
+										<div class="input-group input-group-sm">
+											<div class="custom-file">
+												<input type="hidden" name="file_category_id" id="file_category_id">
+												<input type="hidden" name="project_id_upload" id="project_id_upload">
+												<input type="file" class="custom-file-input" id="uploadProjectFile" name="file_data" accept="" required>
+												<label class="custom-file-label" for="uploadProjectFile">Choose a file to upload for this project..</label>
+											</div>
+											<div class="input-group-append">
+												<button class="btn btn-outline-secondary" type="submit" name="d_action" value="uploadFile">Upload</button>
+											</div>
+										</div>
+										<p class="mb-0"><small><i><b>*Click on one of any existing FOLDER ONLY first before uploading a file.</b></i></small></p>
+									</form>
+									<div class="input-group input-group-sm mb-3 border border-dark p-2 rounded" id='searchFolderDiv' style='display:none'>
+										<div class="input-group-prepend">
+											<label class="input-group-text" for="searchTree">Search Folder:</label>
+										</div>
+										<input type="text" class="form-control" id="searchTree" name="searchTree" placeholder="Enter keyword.." autocomplete="off">
+									</div>
+									<!-- for file renaming button -->
+									<p id='feditMessage' style='display:none' class="mb-0"><small><i><b>*1. Make sure to SAVE after finished renaming.<br>
+									*2. Please do not change the FILE TYPE. Rename the FILE NAME only.</b></i></small></p>
+									<!-- for drag and drop button -->
+									<p id='fdragMessage' style='display:none' class="mb-0"><small><i><b>*Make sure to SAVE after finished drag and dropping.</b></i></small></p>
+									<hr>
+									<!--<a href="/bl?tn=prom_project_file&cn=file&k=5">wg.png</a>-->
+									<p class='text-center no-data-tree-message' id='noDataTreeMessage'>No data to display</p>
+									<div id="projectFolderTree" style='display:none'></div>
+								</div>
+							</div>
+						</div>
 
-            <!-- START: RIGHT SIDE -->
-            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
-              <div class="card mb-3">
-                  <div class="card-header">
-                    <h4><i class="fas fa-chart-bar"></i>Scope Progress</h4>
-                  </div>
-                  <div class="card-body">
-                    <div class="chart">
-                      <canvas id="barChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                  </div>
-                    <div class="card-header" id="cardHeaderRight">
-                      <h4><i class="fas fa-chart-bar"></i>Team Member Progress</h4>
-                    </div>
-                      <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                      </div>
-                </div>
-              
-            </div>
-            <!-- END: RIGHT SIDE -->
-        </div>
+						<div class="col-7">
+							<div class="card mb-3">
+								<div class="card-header">
+									<h4><i class="fas fa-chart-bar"></i>Scope Progress</h4>
+								</div>
+								<div class="card-body" id="cardSimpleBar">
+									<div class="chart">
+										<canvas id="barChart"
+											style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+									</div>
+								</div>
+								<div class="card-header" id="cardHeaderRight">
+									<h4><i class="fas fa-chart-bar"></i>Team Member Progress</h4>
+								</div>
+								<div class="card-body" id="cardHorizontalBar">
+									<h5 class="card-title">Special title treatment</h5>
+									<p class="card-text">With supporting text below as a natural lead-in to additional
+										content.</p>
+									<a href="#" class="btn btn-primary">Go somewhere</a>
+								</div>
+							</div>
+						</div>
+					</div>
+						
+					<div class="row">
+						<div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="card mb-3">
+								<div class="card-header">
+									<h4>
+										<i class="fa fa-list margin-for-icon"></i>
+										Specification List
+										<a role="button" href="#" class="btn btn-primary btn-sm inbtn btnPadding"
+											data-toggle="modal" data-target="#addModal" title="Add specification">
+											<i class="fa fa-plus fa-xs"></i>
+										</a>
+									</h4>
+								</div>
 
-        <!-- TABLE -->
-          <div class="row">
-            <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <div class="card mb-3">
-                <div class="card-header">
-                  <h4><i class="fa fa-list margin-for-icon"></i>Specification List<a role="button" href="#" class="btn btn-primary btn-sm inbtn btnPadding" data-toggle="modal" data-target="#addModal" title="Add specification"><i class="fa fa-plus fa-xs"></i></a></h4>
-                </div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table id="example2" class="table table-bordered table-hover">
+											<thead>
+												<tr>
+													<th>Rendering engine</th>
+													<th>Browser</th>
+													<th>Platform(s)</th>
+													<th>Engine version</th>
+													<th>CSS grade</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Trident</td>
+													<td>Internet
+														Explorer 4.0
+													</td>
+													<td>Win 95+</td>
+													<td> 4</td>
+													<td>X</td>
+												</tr>
+												<tr>
+													<td>Other browsers</td>
+													<td>All others</td>
+													<td>-</td>
+													<td>-</td>
+													<td>U</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<th>Rendering engine</th>
+													<th>Browser</th>
+													<th>Platform(s)</th>
+													<th>Engine version</th>
+													<th>CSS grade</th>
+												</tr>
+											</tfoot>
+										</table>
+									</div> <!-- /table-responsive -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+		<footer class="main-footer">
+			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">Project Management system.io</a>.</strong>
+			All rights reserved.
+			<div class="float-right d-none d-sm-inline-block">
+				<b>Version</b> 3.2.0
+			</div>
+		</footer>
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!-- ================================================================================================================================== -->
+
+	<!-- START: MODALS -->
+
+	<!-- START: modal ADD PROJECT -->
+	<div class="modal fade custom-modal" id="addProject" tabindex="-1" role="dialog" aria-labelledby="addProject"
+		aria-hidden="true" style="display: none;">
+		<form id="addProjectForm" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Add Project</h5>
+						<button id='btnCloseModalAddProject' type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<!-- <div id='errorAddProject' class="hidden alert alert-danger alert-dismissible fade show"
+							role="alert">
+							<p class='forAlert' id='errorAddProjectContent'></p>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div> -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputName">Project Name</label>
+								<input type="text" class="form-control form-control-sm" id="project_name"
+									name="project_name" placeholder="Enter Project Name" autocomplete="off" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="project_manager">Project Manager</label>
+								<select name="project_manager" id="project_manager_select"
+									class="form-control form-control-sm" selected="project" required>
+									<option disabled selected hidden value="">Select Project Manager</option>
+									{% for u in users %}
+									<option value="{{u['ID']}}">{{u['FIRST_NAME']}} {{u['LAST_NAME']}}</option>
+									{% endfor %}
+								</select>
+							</div>
+
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="project_desc" name="description" required
+								placeholder="Enter Project Description"></textarea>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Start Date</label>
+								<input type="date" class="form-control datepicker_project form-control-sm"
+									id="project_start" name="project_start" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label>End Date</label>
+								<input type="date" class="form-control datepicker_project form-control-sm"
+									id="project_end" name="project_end" required>
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="project-type" id="radio-project-public" value="public" required>
+									<label class="form-check-label" for="radio-project-public">Public</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="project-type" id="radio-project-private" value="private" required>
+									<label class="form-check-label" for="radio-project-private">Private</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-inline">
+							<div class="form-group col">
+								<label class="form-check-label div-add-project-public mr-2" for="checkbox-rtj" style="font-weight: 700;">Request To Join?</label>
+								<input class="form-check-input div-add-project-public" type="checkbox" id="checkbox-rtj">
+								<label class="div-add-project-private mr-2" for="private-pw">Password</label>
+								<input type="password" class="div-add-project-private form-control form-control-sm" id="private-pw" name="private-pw" placeholder="Enter Project Password" autocomplete="off">
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" id="action_project" class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- START: modal ADD PROJECT -->
+
+	<!-- START: modal EDIT PROJECT MANAGER -->
+	<div class="modal fade custom-modal" id="modalEditManager" tabindex="-1" role="dialog" aria-labelledby="add"
+		aria-hidden="true">
+		<form action="{{ url_for('dashboard') }}" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Add/Edit Project Manager</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="empList">Project Manager</label>
+							<select name="empList" id="empList" class="form-control form-control-sm"></select>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<input type="hidden" name="projectIdEditManager" id="projectIdEditManager">
+						<input type="hidden" name="managerTId" id="managerTId">
+						<input type="hidden" name="managerUserId" id="managerUserId">
+						<button type="submit" id='removeProjectManagerBtn' name="d_action"
+							value="delete_project_manager" class="btn btn-danger"
+							title='Remove Project Manager'>Remove</button>
+						<button type="submit" name="d_action" value="update_project_manager"
+							class="btn btn-success">Update</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal EDIT PROJECT MANAGER -->
+
+	<!-- START: modal if NO PROJECT -->
+	<div class="modal fade custom-modal" id="noProjectNotify" tabindex="-1" role="dialog" style="display: none;"
+		data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+
+				<div class="modal-header bg-danger">
+					<h5 class="modal-title" id="exampleModalLabel2">No Project</h5>
+				</div>
+
+				<div class="modal-body">
+					<p><b>No project availabe to display in system. Please add a project to proceed by clicking the
+							button below.</b></p>
+					<button type="button" id="noProjectAddProjectBtn" class="btn btn-primary">Add Project</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<!-- END: modal if NO PROJECT -->
+
+	<!-- START: modal TEAM MEMBER -->
+	<div class="modal fade custom-modal" id="addTeam" tabindex="-1" role="dialog" aria-labelledby="add"
+		aria-hidden="true">
+		<form id="inputTMForm" action="{{ url_for('dashboard') }}" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Add/Edit Team Member</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="addedTM">Team Member(s)</label>
+							<input type="hidden" id="team_project_id" name="team_project_id">
+							<select id="addedTM" name="inputTM" class="form-control form-control-sm"
+								multiple="multiple">
+								{% for u in users %}
+								<option value="{{u['ID']}}">{{u['FIRST_NAME']}} {{u['LAST_NAME']}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+						<button type="submit" id="inputTMSubmit" name="d_action" value="save_team"
+							class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal TEAM MEMBER -->
+
+	<!-- START: modal ADD SCOPE -->
+	<div class="modal fade custom-modal" id="addScopeModal" tabindex="-1" role="dialog" aria-labelledby="addProject"
+		aria-hidden="true" style="display: none;">
+		<form id="addScopeForm" action="{{ url_for('dashboard') }}" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Add Scope</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<!-- <div id='errorAddScope' class="hidden alert alert-danger alert-dismissible fade show" role="alert">
+							<p class='forAlert' id='errorAddScopeContent'></p>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div> -->
+						<div class="form-group">
+							<label for="inputName">Scope Name</label>
+							<input type="hidden" name="project_id_in_scope" id="project_id_in_scope" value="" />
+							<input type="text" class="form-control form-control-sm" id="scope_name" name="scope_name"
+								placeholder="Enter Scope Name" autocomplete="off" required>
+						</div>
+
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="scope_desc" name="scope_desc"
+								placeholder="Enter Scope Description"></textarea>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label>Start Date</label>
+								<input type="date" class="form-control datepicker_scope form-control-sm"
+									id="scope_start" name="scope_start" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label>End Date</label>
+								<input type="date" class="form-control datepicker_scope form-control-sm" id="scope_end"
+									name="scope_end" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" id="scope_action" name="d_action" value="scope_save"
+							class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal ADD SCOPE -->
+
+	<!-- START: modal ADD SPECIFICATIONS -->
+	<div class="modal fade custom-modal" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModal"
+		aria-hidden="true">
+		<form id="addSpecForm" action="{{ url_for('dashboard') }}" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Add Specification</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<!-- <div id='errorAddSpec' class="hidden alert alert-danger alert-dismissible fade show" role="alert">
+							<p class='forAlert' id='errorAddSpecContent'></p>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div> -->
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputName">Name</label>
+								<input type="text" class="form-control form-control-sm" id="inputName" name="inputName"
+									placeholder="Enter Spec. Name" autocomplete="off" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputScope">Scope</label>
+								<select name="inputScope" id="inputScope" class="form-control form-control-sm"
+									required></select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="inputDesc"
+								placeholder="Enter Spec. Description" name="inputDesc"></textarea>
+						</div>
+
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputPerson">Assigned Person</label>
+								<select name="inputPerson" id="inputPerson" class="form-control form-control-sm"
+									required></select>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputDuration">Duration</label>
+								<select name="inputDuration" id="inputDuration" class="form-control form-control-sm"
+									required>
+									<option value="" disabled selected hidden>Select Duration</option>
+									{% for d in all_duration %}
+									<option value="{{d['ID']}}">{{d['NAME']}}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+						<button type="submit" name="d_action" value="save" class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal ADD SPECIFICATIONS -->
+
+	<!-- START: modal UPDATE PROJECT (OVERALL PROJECT VIEW TREE)-->
+	<div class="modal fade custom-modal" id="UpdateModal" tabindex="-1" role="dialog" aria-labelledby="update"
+		aria-hidden="true" style="display: none;">
+		<form method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Edit Project</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputName">Project Name</label>
+								<input type="text" class="form-control form-control-sm" id="update_name_project"
+									name="project_name" autocomplete="off" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="update_decs_project"
+								name="project_desc"></textarea>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputPerson">Start Date</label>
+								<input type="date" class="form-control datepicker_edit_project form-control-sm"
+									id="update_project_start" name="project_start" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputPerson">End Date</label>
+								<input type="date" class="form-control datepicker_edit_project form-control-sm"
+									id="update_project_end" name="project_end" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<input type="hidden" name="id_project_custom" id="id_project_custom" value="" />
+						<input type="hidden" name="project_id" id="project_id_select" value="" />
+						<button type="button" id="delete_project_update" class="btn btn-danger">Delete</button>
+						<button type="button" id="update_project" class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal UPDATE PROJECT (OVERALL PROJECT VIEW TREE)-->
+
+	<!-- START: modal UPDATE SCOPE (OVERALL PROJECT VIEW TREE)-->
+	<div class="modal fade custom-modal" id="updateScope" tabindex="-1" role="dialog" aria-labelledby="update"
+		aria-hidden="true" style="display: none;">
+		<form method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Edit Scope</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="inputName">Scope Name</label>
+							<input type="text" class="form-control form-control-sm" id="update_name_scope"
+								name="scope_name" autocomplete="off" required>
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="update_scope_desc"
+								name="scope_desc"></textarea>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputPerson">Start Date</label>
+								<input type="date" class="form-control datepicker_edit_scope form-control-sm"
+									id="update_scope_start" name="scope_start" required>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputPerson">End Date</label>
+								<input type="date" class="form-control datepicker_edit_scope form-control-sm"
+									id="update_scope_end" name="scope_end" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<input type="hidden" name="id_scope_custom" id="id_scope_custom" value="">
+						<input type="hidden" name="id_scope" id="id_scope_select" value="">
+						<button type="button" id="delete_update_scope" class="btn btn-danger">Delete</button>
+						<button type="button" id="update_scope" class="btn btn-primary">Save</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal UPDATE SCOPE (OVERALL PROJECT VIEW TREE)-->
+
+	<!-- START: modal UPDATE SPEC. (OVERALL PROJECT VIEW TREE) -->
+	<div class="modal fade custom-modal" id="update_spec_tree" tabindex="-1" role="dialog"
+		aria-labelledby="update_spec_tree" aria-hidden="true">
+		<form method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Update Specification</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="inputName">Name</label>
+								<input type="text" class="form-control form-control-sm" id="spec_name_udpdate"
+									name="inputName" placeholder="Enter Spec. Name" autocomplete="off">
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputScope">Scope</label>
+								<select name="spec_scop_update" id="spec_scop_update"
+									class="form-control form-control-sm"></select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm" id="spec_desc_update"
+								placeholder="Enter Spec. Description" name="inputDesc"></textarea>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-md-6">
+								<label for="spec_person_update">Assigned Person</label>
+								<select name="spec_person_update" id="spec_person_update"
+									class="form-control form-control-sm"></select>
+							</div>
+							<div class="form-group col-md-6">
+								<label for="inputDuration">Duration</label>
+								<select name="spec_duration_update" id="spec_duration_update"
+									class="form-control form-control-sm"></select>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<input type="hidden" id="id_spec_update" name="id_spec">
+						<button type="button" id="btnDeleteSpecTree" name="d_action" value="delete_spec"
+							class="btn btn-danger">Delete</button>
+						<button type="button" id="btnUpdateSpecTree" class="btn btn-primary">Update</button>
+					</div>
+
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal UPDATE SPEC. (OVERALL PROJECT VIEW TREE) -->
+
+	<!-- END: MODALS -->
+
+	<!-- ================================================================================================================================== -->
+
+	<!-- jQuery -->
+	<script src="../static/plugins/jquery/jquery.min.js"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script src="../static/plugins/jquery-ui/jquery-ui.min.js"></script>
+	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+	<script>
+		$.widget.bridge('uibutton', $.ui.button)
+	</script>
+	<!-- Bootstrap 4 -->
+	<script src="../static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- ChartJS -->
+	<script src="../static/plugins/chart.js/Chart.min.js"></script>
+	<!-- JQVMap -->
+	<script src="../static/plugins/jqvmap/jquery.vmap.min.js"></script>
+	<script src="../static/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+	<!-- overlayScrollbars -->
+	<script src="../static/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="../static/dist/js/adminlte.js"></script>
+	<!-- DataTables  & Plugins -->
+	<script src="../static/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="../static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script src="../static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="../static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+	<script src="../static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="../static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+	<script src="../static/plugins/jszip/jszip.min.js"></script>
+	<script src="../static/plugins/pdfmake/pdfmake.min.js"></script>
+	<script src="../static/plugins/pdfmake/vfs_fonts.js"></script>
+	<script src="../static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+	<script src="../static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+	<script src="../static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js'></script>
+
+	<script>
+		$(document).ready(function () {
+
+			$('#btn-add-project').click(function() {
+				$('.div-add-project-public, .div-add-project-private').hide();
+			});
+
+			$('#radio-project-public').on('change', function() {
+				if ($(this).is(':checked')) {
+					$('.div-add-project-public').show();
+					$('.div-add-project-private').hide();
+    				$('#private-pw').prop("required", false);
+					$('#private-pw').val('');
+				}
+			});
+
+			$('#radio-project-private').on('change', function() {
+				if ($(this).is(':checked')) {
+					$('.div-add-project-private').show();
+    				$('#private-pw').prop("required", true);
+					$('.div-add-project-public').hide();
+					$('#checkbox-rtj').prop('checked', false);
+				}
+			});
+
+			// START - INIT script for OVERALL PROJECT VIEW TREEVIEW
+
+			$("#project_tree").jstree();
+
+			// END - INIT script for OVERALL PROJECT VIEW TREEVIEW
+
+			$('input[type="file"]').change(function(e){
+				var fileName = e.target.files[0].name;
+				$('.custom-file-label').html(fileName);
+			});
                 
-                    <div class="card-body">
-                        <div class="table-responsive">
-                          <table id="example2" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                              <th>Rendering engine</th>
-                              <th>Browser</th>
-                              <th>Platform(s)</th>
-                              <th>Engine version</th>
-                              <th>CSS grade</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                              <td>Trident</td>
-                              <td>Internet
-                                Explorer 4.0
-                              </td>
-                              <td>Win 95+</td>
-                              <td> 4</td>
-                              <td>X</td>
-                            </tr>
-                            <tr>
-                              <td>Other browsers</td>
-                              <td>All others</td>
-                              <td>-</td>
-                              <td>-</td>
-                              <td>U</td>
-                            </tr>
-                            </tbody>
-                            <tfoot>
-                            <tr>
-                              <th>Rendering engine</th>
-                              <th>Browser</th>
-                              <th>Platform(s)</th>
-                              <th>Engine version</th>
-                              <th>CSS grade</th>
-                            </tr>
-                            </tfoot>
-                          </table>
-                        </div> <!-- /table-responsive -->
-                    </div> <!-- /card-body -->
-                </div> <!-- /card mb-3 -->
-            </div>
-        </div> <!-- /TABLE -->
+			function fileToolbar(aV, aB, iV1, iB1, iV2, iB2, iV3, iB3) {
+				// a = active, i = inactive, V = value, B = button
+				var enableTitle = '';
+				var disableTitle = '';
+				let jsTree = $("#projectFolderTree").jstree(true);
+				if ( $(aV).val() === '0' ) {
+					$(aB).addClass('btn-danger');
+					$(aB).removeClass('btn-secondary');
+					$(aV).val('1');
+					
+					enableTitle = $(aB).attr("title");
+					disableTitle = enableTitle.replace("Enable", "Disable");
+					$(aB).prop('title', disableTitle);
+					
+					if ( aV === '#fdragVal' ) {
+						$('#fdragMessage').show();
+						jsTree.settings.dnd.is_draggable = true;
+					}
+					else {
+						$('#fdragMessage').hide();
+					}
+					if ( aV === '#feditVal' ) {
+						$('#feditMessage').show();
+					}
+					else {
+						$('#feditMessage').hide();
+					}
+					if ( aV === '#fdeleteVal' ) {
+						jsTree.uncheck_all();
+						jsTree.settings.checkbox.cascade = 'down';
+						jsTree.settings.core.multiple = true;
+						jsTree.show_checkboxes();
+						$("#fconfirmDeleteBtn").show();
+					}
+					else {
+						jsTree.settings.checkbox.cascade = '';
+						jsTree.settings.core.multiple = false;
+						jsTree.hide_checkboxes();
+						jsTree.uncheck_all();
+						$("#fconfirmDeleteBtn").hide();
+					}
+					$(iB1).add($(iB2)).add($(iB3)).addClass('btn-secondary');
+					$(iB1).add($(iB2)).add($(iB3)).removeClass('btn-danger');
+					$(iV1).add($(iV2)).add($(iV3)).val('0');
+					$(iB1).prop('title', (($(iB1).attr("title")).replace("Disable", "Enable")));
+					$(iB2).prop('title', (($(iB2).attr("title")).replace("Disable", "Enable")));
+					$(iB3).prop('title', (($(iB3).attr("title")).replace("Disable", "Enable")));
+				}
+				else {
+					$(aB).addClass('btn-secondary');
+					$(aB).removeClass('btn-danger');
+					$(aV).val('0');
+					if ( aV === '#fdragVal' ) {
+						$('#fdragMessage').hide();
+						jsTree.settings.dnd.is_draggable = false;
+					}
+					if ( aV === '#feditVal' ) {
+						$('#feditMessage').hide();
+					}
+					if ( aV === '#fdeleteVal' ) {
+						jsTree.settings.checkbox.cascade = '';
+						jsTree.settings.core.multiple = false;
+						jsTree.hide_checkboxes();
+						jsTree.uncheck_all();
+						$("#fconfirmDeleteBtn").hide();
+					}
+					disableTitle = $(aB).attr("title");
+					enableTitle = disableTitle.replace("Disable", "Enable");
+					$(aB).prop('title', enableTitle);
+				}
+			}
+			
+			// START - script for TREEVIEW (PROJECT FOLDER)
+			
+			$("#projectFolderTree").jstree();
+			
+			var to = false;
+			$('#searchTree').keyup(function () {
+				if (to) { clearTimeout(to); }
+				to = setTimeout(function () {
+					var v = $('#searchTree').val();
+					$('#projectFolderTree').jstree(true).search(v);
+				}, 100);
+			});
+			
+			let titleCreateFolderBtn = $("#fcreateFolderBtn").attr('title');
+			$("#fcreateFolderBtn").on("click", function() {
+				if ( $('#fcreateFolderVal').val() === '0' ) {
+					$(this).removeAttr('title');
+					$("#fcreateFolderBtn").addClass("btn-danger").removeClass("btn-primary");
+					$('#fcreateFolderVal').val('1');
+					$('#newFolderDiv').show();
+					$("#fclearInputBtn").show();
+				}
+				else {
+					$(this).attr('title', titleCreateFolderBtn);
+					$("#fcreateFolderBtn").addClass("btn-primary").removeClass("btn-danger");
+					$('#fcreateFolderVal').val('0');
+					$('#newFolderDiv').hide();
+					$("#projectFolderTree").jstree(true).uncheck_all();
+					if ($("#newFolderDiv").css('display').toLowerCase() === 'flex' || 
+					$("#searchFolderDiv").css('display').toLowerCase() === 'flex' ||
+					$("#uploadFileForm").css('display').toLowerCase() === 'block') {
+						$("#fclearInputBtn").show();
+					}
+					else { $("#fclearInputBtn").hide(); }
+				}
+			});
+			
+			$("#newFolderName").keypress(function(event) {
+				if (event.keyCode === 13) {
+					$("#confirmCreateFolderBtn").click();
+				}
+			});
+			
+			$("#confirmCreateFolderBtn").on("click", function() {
+				var selectedNode = $("#projectFolderTree").jstree(true).get_selected(true)[0];
+				var newFolderName = $('#newFolderName').val();
+				let jsTree = $("#projectFolderTree").jstree(true);
+				
+				if (newFolderName) {
+					if (selectedNode) {
+						// check if selected node is file
+						if (selectedNode.type != 'file') {
+							// folder under a folder
+							$.post("{{ url_for('dashboard') }}", { 
+								d_action: "createFolderChild", 
+								projectId: $("#sel_project").val(), 
+								name: newFolderName, 
+								parent_id: selectedNode.id 
+							})
+							.done(function (data, status) {
+								let convert_json = JSON.parse(data);
+								var file_category_id_custom = convert_json.file_category_id_custom;
+								jsTree.create_node(selectedNode.id , { id: file_category_id_custom, text: newFolderName, type: 'folder' });
+								$('#projectFolderTree').show();
+								$('#noDataTreeMessage').hide();
+							}, "json");
+							$('#errorFolderProject').hide();
+						}
+						else {
+							$('#errorFolderProjectContent').html('<b>ERROR.</b> Cannot create a new folder under an existing <b>FILE</b>. Choose an existing <b>FOLDER</b> only.');
+							$('#errorFolderProject').show();
+						}
+					}
+					else {
+						// new root folder
+						$.post("{{ url_for('dashboard') }}", { 
+							d_action: "createFolderRoot", projectId: $("#sel_project").val(), name: newFolderName
+						})
+						.done(function (data, status) {
+							let convert_json = JSON.parse(data);
+							var file_category_id_custom = convert_json.file_category_id_custom;
+							jsTree.create_node('#' , { id: file_category_id_custom, text: newFolderName, type: 'folder' });
+							$('#projectFolderTree').show();
+							$('#noDataTreeMessage').hide();
+						}, "json");
+					}
+				}
+				else {
+					console.log('error. no new folder name.');
+				}
+			});
+			
+			$("#saveTreeBtn").on("click", function() {
+				var treeJson = $("#projectFolderTree").jstree(true).get_json('#', {flat:true});
+				console.log(treeJson);
+				var treeJsonStr = JSON.stringify(treeJson);
+				
+				$.post("{{ url_for('dashboard') }}", { 
+					d_action: "updateTree", treeData: treeJsonStr
+				})
+				.done(function (data, status) {
+					$('#successFolderProjectContent').html('<b>Successfully</b> updated project folder.');
+					$('#successFolderProject').show();
+					setTimeout(function() { 
+						$('#successFolderProject').hide('slow');
+					}, 2000);
+				}, "json");
+			});
+			
+			$("#fdownloadBtn").on("click", function() {
+				fileToolbar("#fdownloadVal", "#fdownloadBtn", "#feditVal", "#feditBtn", "#fdeleteVal", "#fdeleteBtn", "#fdragVal", "#fdragBtn");
+			});
+			
+			$("#fdeleteBtn").on("click", function() {
+				fileToolbar("#fdeleteVal", "#fdeleteBtn", "#fdownloadVal", "#fdownloadBtn", "#feditVal", "#feditBtn", "#fdragVal", "#fdragBtn");
+			});
+			
+			$("#fconfirmDeleteBtn").on("click", function() {
+				let jsTree = $("#projectFolderTree").jstree(true);
+				var fileToDeleteArr = jsTree.get_selected();
+				var fileToDeleteArrJson = JSON.stringify(fileToDeleteArr);
+				var fileToDeleteArrAllData = jsTree.get_selected(true);
+				
+				var countFile = 0;
+				var countFolder = 0;
+				$.each(fileToDeleteArrAllData, function (key, value) {
+					if (value.type === 'folder') {
+						countFolder++;
+					}
+					else {
+						countFile++;
+					}
+				});
+				console.log(fileToDeleteArr);
+				jsTree.delete_node(fileToDeleteArr);
+				
+				$.post("{{ url_for('dashboard') }}", { 
+					d_action: "deleteFile", fileDeleteArr: fileToDeleteArrJson
+				})
+				.done(function (data, status) {
+					// let convert_json = JSON.parse(data);
+					$('#successFolderProjectContent').html('<b>Successfully</b> deleted:-<br><b>' + countFolder + '</b> folder(s).<br><b>' + countFile + '</b> file(s).');
+					$('#successFolderProject').show();
+					setTimeout(function() { 
+						$('#successFolderProject').hide('slow');
+					}, 5000);
+					var allNodeArr = $("#projectFolderTree").jstree(true).get_json();
+					if (allNodeArr.length === 0) {
+						$('#projectFolderTree').hide();
+						$('#noDataTreeMessage').show();
+					}
+				}, "json");
+				
+				$("#projectFolderTree").jstree(true).uncheck_all();
+			});
+			
+			$("#feditBtn").on("click", function() {
+				fileToolbar("#feditVal", "#feditBtn", "#fdownloadVal", "#fdownloadBtn", "#fdeleteVal", "#fdeleteBtn", "#fdragVal", "#fdragBtn");
+			});
+			
+			$("#fdragBtn").on("click", function() {
+				fileToolbar("#fdragVal", "#fdragBtn", "#fdownloadVal", "#fdownloadBtn", "#feditVal", "#feditBtn", "#fdeleteVal", "#fdeleteBtn");
+			});
+			
+			let titleSearchBtn = $("#fsearchBtn").attr('title');
+			$("#fsearchBtn").click(function() {
+				if ($("#fsearchVal").val() === '0') {
+					$(this).removeAttr('title');
+					$("#fsearchBtn").addClass("btn-danger").removeClass("btn-primary");
+					$("#fsearchVal").val('1');
+					$("#searchFolderDiv").show();
+					$("#fclearInputBtn").show();
+				}
+				else {
+					$(this).attr('title', titleSearchBtn);
+					$("#fsearchBtn").addClass("btn-primary").removeClass("btn-danger");
+					$("#fsearchVal").val('0');
+					$("#searchFolderDiv").hide();
+					if ($("#newFolderDiv").css('display').toLowerCase() === 'flex' || 
+					$("#searchFolderDiv").css('display').toLowerCase() === 'flex' ||
+					$("#uploadFileForm").css('display').toLowerCase() === 'block') {
+						$("#fclearInputBtn").show();
+					}
+					else { $("#fclearInputBtn").hide(); }
+				}
+			});
+			
+			let titleUploadBtn = $("#fuploadBtn").attr('title');
+			$("#fuploadBtn").click(function() {
+				if ($("#fuploadVal").val() === '0') {
+					$("#fuploadBtn").addClass("btn-danger").removeClass("btn-primary");
+					$(this).removeAttr('title');
+					$("#fuploadVal").val('1');
+					$("#uploadFileForm").show();
+					$("#fclearInputBtn").show();
+				}
+				else {
+					$(this).attr('title', titleUploadBtn);
+					$("#fuploadBtn").addClass("btn-primary").removeClass("btn-danger");
+					$("#fuploadVal").val('0');
+					$("#uploadFileForm").hide();
+					if ($("#newFolderDiv").css('display').toLowerCase() === 'flex' || 
+					$("#searchFolderDiv").css('display').toLowerCase() === 'flex' ||
+					$("#uploadFileForm").css('display').toLowerCase() === 'block') {
+						$("#fclearInputBtn").show();
+					}
+					else { $("#fclearInputBtn").hide(); }
+				}
+			});
+			
+			$("#fclearSelectedBtn").click(function() {
+				$("#projectFolderTree").jstree(true).uncheck_all();
+				$('#file_category_id').val('');
+				$('#successFolderProjectContent').html('<b>Successfully</b> cleared selected files/folders.');
+				$('#successFolderProject').show();
+				setTimeout(function() { 
+					$('#successFolderProject').hide('slow');
+				}, 2000);
+			});
+			
+			$("#fclearInputBtn").click(function() {
+				let divs = $("#newFolderDiv").add($("#uploadFileForm")).add($("#searchFolderDiv")).add($("#fclearInputBtn"));
+				let values = $("#fcreateFolderVal").add($("#fuploadVal")).add($("#fsearchVal"));
+				let btns = $("#fcreateFolderBtn").add($("#fuploadBtn")).add($("#fsearchBtn"));
+				divs.hide();
+				values.val('0');
+				btns.addClass("btn-primary").removeClass("btn-danger");
+				$("#fsearchBtn").attr('title', titleSearchBtn);
+				$("#fuploadBtn").attr('title', titleUploadBtn);
+				$("#fcreateFolderBtn").attr('title', titleCreateFolderBtn);
+			});
 
-      </div>
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">Project Management system.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-      <b>Version</b> 3.2.0
-    </div>
-  </footer>
+			$('#uploadFileForm').submit(function () {
+				if ($('#file_category_id').val() === '') {
+					$('#errorFolderProjectContent').html('<b>ERROR.</b> Please choose a folder for the uploaded file.');
+					$('#errorFolderProject').show();
+					return false;
+				}
+				else if ($("#projectFolderTree").jstree(true).get_node($('#file_category_id').val()).type === 'file') {
+					$('#errorFolderProjectContent').html('<b>ERROR.</b> FILE cannot be a parent. Please choose a FOLDER as parent.');
+					$('#errorFolderProject').show();
+					return false;
+				}
+				else {
+					return true;
+				}
+			});
+			
+			// END - script for TREEVIEW (PROJECT FOLDER)
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
-</div>
-<!-- ./wrapper -->
+			if (window.history.replaceState) {
+				window.history.replaceState(null, null, window.location.href);
+			}
 
-<!-- jQuery -->
-<script src="../static/plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="../static/plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script>
-<!-- Bootstrap 4 -->
-<script src="../static/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
-<script src="../static/plugins/chart.js/Chart.min.js"></script>
-<!-- JQVMap -->
-<script src="../static/plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="../static/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- overlayScrollbars -->
-<script src="../static/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../static/dist/js/adminlte.js"></script>
-<!-- DataTables  & Plugins -->
-<script src="../static/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="../static/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="../static/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../static/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../static/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../static/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../static/plugins/jszip/jszip.min.js"></script>
-<script src="../static/plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../static/plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../static/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../static/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="../static/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script>
-   //-------------
-    //- BAR CHART -
-    //-------------
+			$("#addedTM").select2({
+				multiple: 'true',
+				placeholder: "Add Member"
+			});
 
-    var areaChartData = {
-      labels  : ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label               : 'Digital Goods',
-          backgroundColor     : 'rgba(60,141,188,0.9)',
-          borderColor         : 'rgba(60,141,188,0.8)',
-          pointRadius          : false,
-          pointColor          : '#3b8bba',
-          pointStrokeColor    : 'rgba(60,141,188,1)',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data                : [28, 48, 40, 19, 86, 27, 90]
-        },
-        {
-          label               : 'Electronics',
-          backgroundColor     : 'rgba(210, 214, 222, 1)',
-          borderColor         : 'rgba(210, 214, 222, 1)',
-          pointRadius         : false,
-          pointColor          : 'rgba(210, 214, 222, 1)',
-          pointStrokeColor    : '#c1c7d1',
-          pointHighlightFill  : '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data                : [65, 59, 80, 81, 56, 55, 40]
-        },
-      ]
-    }
+			// for TEAM MEMBER MODAL
+			$(document).on('click', '#btnAddTM', function (ev) {
+				var projectId = $('#sel_project').val();
+				$.post("{{ url_for('dashboard') }}", { project_id: projectId, d_action: "get_team_member" })
+					.done(function (data, status) {
+						convert_json = JSON.parse(data)
+						// console.log(convert_json)
+						var teamMemberOption = convert_json.teamMemberOption;
+						var userArr = convert_json.userArr;
+						$('#addedTM')
+							.find('option')
+							.remove()
+							.end()
+						$.each(teamMemberOption, function (key, value) {
+							$("#addedTM").append('<option value=' + value.ID + '>' + value.FULL_NAME + '</option>');
+						});
+						$('#addedTM').val(userArr)
+						$('#addedTM').trigger('change')
 
-    var barChartCanvas = $('#barChart').get(0).getContext('2d')
-    var barChartData = $.extend(true, {}, areaChartData)
-    var temp0 = areaChartData.datasets[0]
-    var temp1 = areaChartData.datasets[1]
-    barChartData.datasets[0] = temp1
-    barChartData.datasets[1] = temp0
+					}, "json");
+			});
 
-    var barChartOptions = {
-      responsive              : true,
-      maintainAspectRatio     : false,
-      datasetFill             : false
-    }
+			$('#inputTMForm').submit(function () {
+				console.log('test')
+				var addedTMJsonStr = JSON.stringify($('#addedTM').val());
+				$.post("{{ url_for('dashboard') }}", { d_action: "save_team", inputTM: addedTMJsonStr, team_project_id: $('#team_project_id').val() })
+					.done(function (data, status) {
+						location.reload();
+					}, "json");
 
-    new Chart(barChartCanvas, {
-      type: 'bar',
-      data: barChartData,
-      options: barChartOptions
-    })
-</script>
+				return false;
+			});
+
+			// ADD PROJECT
+			$('#addProjectForm').submit(function () {
+				let projectType = $('input[name=project-type]:checked', '#addProjectForm').val();
+				
+				let formData = {
+					name: $("#project_name").val(),
+					desc: $("#project_desc").val(),
+					start: $("#project_start").val(),
+					end: $("#project_end").val(),
+					manager: $("#project_manager_select").val(),
+					ptype: projectType
+				};
+
+				if (projectType === 'public') {
+					if ($('#checkbox-rtj').is(":checked")) {
+						formData.requestToJoin = true;
+					}
+					else {
+						formData.requestToJoin = false;
+					}
+				}
+				else if (projectType === 'private') {
+					formData.privateProPW = $('#private-pw').val();
+				}
+
+				let format_data = JSON.stringify(formData);
+				$.post("{{ url_for('dashboard') }}", { d_action: "data_save", form_data: format_data })
+					.done(function (data, status) {
+						convert_json = JSON.parse(data)
+						if (convert_json.data === "sucess") {
+							location.reload();
+						}
+					}, "json");
+
+				return false;
+			});
+
+			// UPDATE PROJECT (TREE)
+			$('#update_project').click( function() {
+				var dataForm = {
+					project_id: $('#project_id_select').val(),
+					project_end: $('#update_project_end').val(),
+					project_start: $('#update_project_start').val(),
+					project_desc: $('#update_decs_project').val(),
+					project_name: $('#update_name_project').val()
+				};
+
+				var dataFormJSON = JSON.stringify(dataForm);
+
+				$.post("{{url_for('dashboard')}}", { d_action: "update_project", formData : dataFormJSON })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+				
+			});
+
+			// DELETE PROJECT (TREE)
+			$('#delete_project_update').click( function() {
+				$.post("{{url_for('dashboard')}}", { d_action: "delete_project", project_id: $('#sel_project').val() })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+			});
+
+			// ADD SCOPE
+			$('#addScopeForm').submit(function () {
+				var formData = {
+					project_id_in_scope: $("#project_id_in_scope").val(),
+					scope_name: $("#scope_name").val(),
+					scope_start: $("#scope_start").val(),
+					scope_end: $("#scope_end").val(),
+					scope_desc: $("#scope_desc").val()
+				};
+				let data_form = JSON.stringify(formData);
+				if (formData["scope_end"] > formData["scope_start"]) {
+					$.post("{{url_for('dashboard')}}", {
+						d_action: "scope_save",
+						data_form: data_form,
+						scopeName: $("#scope_name").val(),
+						project_id: $('#sel_project').val()
+					}).done(function (data, status) {
+						cJson = JSON.parse(data);
+						location.reload();
+					}, "json");
+				}
+				else {
+					alert("INVALID DATE RANGE. START DATE is greater than END DATE. Please choose a valid date range.");
+				}
+
+				return false;
+			});
+
+			// UPDATE SCOPE (TREE)
+			$('#update_scope').click( function() {
+				var formData = {
+					scope_id : $("#id_scope_select").val(),
+					name: $("#update_name_scope").val(),
+					desc: $("#update_scope_desc").val(),
+					start: $("#update_scope_start").val(),
+					end: $("#update_scope_end").val()
+				};
+
+				var formDataJSON = JSON.stringify(formData);
+
+				$.post("{{url_for('dashboard')}}", { d_action: "update_scope", data_form: formDataJSON })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+				
+			});
+
+			// DELETE SCOPE (TREE)
+			$('#delete_update_scope').click( function() {
+				$.post("{{url_for('dashboard')}}", { d_action: "delete_scope", scope_id: $("#id_scope_select").val() })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+			});
+
+			// ADD SPEC.
+			$('#addSpecForm').submit(function () {
+				var formData = {
+					name: $("#inputName").val(),
+					scope: $("#inputScope").val(),
+					desc: $("#inputDesc").val(),
+					assignedPerson: $("#inputPerson").val(),
+					duration: $("#inputDuration").val()
+				};
+				var formDataJSON = JSON.stringify(formData);
+				$.post("{{url_for('dashboard')}}", { d_action: "insert_new_spec", data_form: formDataJSON, project_id: $('#sel_project').val() })
+					.done(function (data, status) {
+						location.reload();
+					}, "json");
+
+				return false;
+			});
+
+			// UPDATE SPEC. (TREE)
+			$("#btnUpdateSpecTree").click(function () {
+				var formData = {
+					specId: $("#id_spec_update").val(),
+					name: $("#spec_name_udpdate").val(),
+					scope: $("#spec_scop_update").val(),
+					desc: $("#spec_desc_update").val(),
+					assignedPerson: $("#spec_person_update").val(),
+					duration: $("#spec_duration_update").val()
+				};
+
+				var formDataJSON = JSON.stringify(formData);
+
+				$.post("{{url_for('dashboard')}}", { d_action: "spec_update", data_form: formDataJSON, project_id: $('#sel_project').val() })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+			});
+
+			// DELETE SPEC. (TREE)
+			$('#btnDeleteSpecTree').click( function() {
+				$.post("{{url_for('dashboard')}}", { d_action: "delete_spec", data_form: $("#id_spec_update").val() })
+				.done(function (data, status) {
+					location.reload();
+				}, "json");
+			});
+
+			$("#removeProjectManagerBtn").hide();
+			$(document).on('click', '.changeProjectManager', function (ev) {
+				var mEmpId = $(this).attr("data-emp-id");
+				var mTeamId = $(this).attr("data-team-id");
+				$("#empList").val(mEmpId);
+				if ($("#empList").val()) {
+					$("#removeProjectManagerBtn").show();
+				}
+				else {
+					$("#removeProjectManagerBtn").hide();
+				}
+				$("#projectIdEditManager").val($('#sel_project').val());
+				$("#managerTId").val(mTeamId);
+				$('#managerUserId').val(mEmpId);
+			});
+
+			$("#sel_project").change(function () {
+
+				// START - CREATE TREE for OVERALL PROJECT TREEVIEW
+
+				if ($("#project_tree")) {
+					$('#project_tree').empty().jstree('destroy');
+				}
+
+				$("#project_tree").jstree({
+					"core": {
+						"check_callback": true,
+						'data': []
+					},
+					"plugins": ["sort"]
+				})
+					.bind("select_node.jstree", function (e, data) {
+						if (data.selected != null) {
+							var text = data.selected[0];
+							if (text.substring(0, 1) == "p") {
+								$.post("{{url_for('dashboard')}}", { d_action: "get_project", id_project: text })
+									.done(function (data, status) {
+										convert_json = JSON.parse(data);
+
+										var project_id = convert_json.project_id;
+										var name = convert_json.name;
+										var desc = convert_json.note;
+										var start = convert_json.start;
+										var start_format = moment(start, 'Y-MM-DDTHH:mm:ss').format('Y-MM-DD');
+										var end = convert_json.end;
+										var end_format = moment(end, 'Y-MM-DDTHH:mm:ss').format('Y-MM-DD');
+
+										$('#UpdateModal').modal('toggle');
+										$('#id_project_custom').val(text);
+										$('#project_id_select').val(project_id);
+										$("#update_name_project").val(name);
+										$("#update_decs_project").val(desc);
+										$("#update_project_start").val(start_format);
+										$("#update_project_end").val(end_format);
+
+									}, "json");
+							}
+							else if (text.substring(0, 2) == "sc") {
+								$.post("{{url_for('dashboard')}}", { d_action: "get_scope", id_scope: text })
+									.done(function (data, status) {
+										convert_json = JSON.parse(data);
+
+										var scope_id = convert_json.scope_id;
+										var name = convert_json.name;
+										var desc = convert_json.note;
+										var start = convert_json.start;
+										var start_format = moment(start, 'Y-MM-DDTHH:mm:ss').format('Y-MM-DD');
+										var end = convert_json.end;
+										var end_format = moment(end, 'Y-MM-DDTHH:mm:ss').format('Y-MM-DD');
+
+										$('#updateScope').modal('toggle');
+										$('#id_scope_custom').val(text);
+										$('#id_scope_select').val(scope_id);
+										$("#update_name_scope").val(name);
+										$("#update_scope_desc").val(desc);
+										$("#update_scope_start").val(start_format);
+										$("#update_scope_end").val(end_format);
+
+									}, "json");
+							}
+							else {
+								$.post("{{url_for('dashboard')}}", { d_action: "get_spec", id_spec: text })
+									.done(function (data, status) {
+										convert_json = JSON.parse(data);
+										// console.log(convert_json);
+
+										let spec_data = convert_json.modal_data[0];
+										let all_duration = convert_json.duration_all;
+										let scope_all = convert_json.scope_all;
+										let all_team_member = convert_json.teamMember;
+
+										$('#spec_name_udpdate').val(spec_data.SPNAME);
+										$('#id_spec_update').val(spec_data.SPID);
+										$("#spec_desc_update").val(spec_data.SPDESC);
+
+										$('#spec_scop_update')
+											.find('option')
+											.remove()
+											.end()
+										$.each(scope_all, function (key, value) {
+											$("#spec_scop_update").append('<option value=' + value.ID + '>' + value.NAME + '</option>');
+										});
+										$("#spec_scop_update").val(spec_data.SCID);
+
+										$('#spec_person_update')
+											.find('option')
+											.remove()
+											.end()
+										$.each(all_team_member, function (key, value) {
+											$("#spec_person_update").append('<option value=' + value.ID + '>' + value.FULL_NAME + '</option>');
+										});
+										$("#spec_person_update").val(spec_data.SPUSER);
+
+										$("#spec_duration_update")
+											.find('option')
+											.remove()
+											.end()
+										$.each(all_duration, function (key, value) {
+											$("#spec_duration_update").append('<option value=' + value.ID + '>' + value.NAME + '</option>');
+										});
+										$("#spec_duration_update").val(spec_data.SPDUR);
+
+										$('#update_spec_tree').modal('toggle');
+
+									}, "json");
+							}
+						}
+					}).bind("refresh.jstree", function (event, data) {
+						$(this).jstree("open_all");
+					});
+				$("#project_tree").jstree(true).settings.core.dblclick_toggle = false;
+
+				// END - CREATE TREE for OVERALL PROJECT TREEVIEW
+
+				// START - CREATE TREE for PROJECT FOLDER TREEVIEW
+
+				if ($("#projectFolderTree")) { $('#projectFolderTree').empty().jstree('destroy'); }
+				
+				$("#projectFolderTree").jstree({
+					"core": {
+						"check_callback": true,
+						'data': []
+					},
+					"types" : {
+						"folder" : {
+							"icon" : "fa-solid fa-folder"
+						},
+						"file": {
+							"max_children" : 0
+						}
+					},
+					"plugins" : [ "wholerow", "dnd", "types", "search", "sort", "checkbox" ]
+				})
+				.bind("select_node.jstree", function (e, data) {
+					$('#file_category_id').val(data.selected[0]);
+					
+					var href = data.node.a_attr.href;
+					if ( $('#fdownloadVal').val() === '1' ) {
+						document.location.href = href;
+					}
+					
+					else if ( $('#feditVal').val() === '1' ) {
+						var node = data.instance.get_node(data.selected[0]);
+						data.instance.edit(node);
+					}
+				});
+				$("#projectFolderTree").jstree(true).settings.dnd.is_draggable = false;
+				$("#projectFolderTree").jstree(true).settings.core.multiple = false;
+				$("#projectFolderTree").jstree(true).hide_checkboxes();
+				$("#projectFolderTree").jstree(true).settings.checkbox.cascade = '';
+				$("#projectFolderTree").jstree(true).settings.core.dblclick_toggle = false;
+				
+				// END - CREATE TREE for PROJECT FOLDER TREEVIEW
+
+				$("#cardTopLeft").height($("#cardSimpleBar").height());
+				$("#cardHeaderLeft").height($("#cardHeaderRight").height());
+				$("#cardBottomLeft").height($("#cardHorizontalBar").height());
+
+				$.post("{{url_for('dashboard')}}", { d_action: "update_page", project: $("#sel_project").val() })
+					.done(function (data, status) {
+
+						$("#team_project_id").val($("#sel_project").val());
+						$("#project_id_in_scope").val($("#sel_project").val());
+						$("#project_id_upload").val($("#sel_project").val());
+
+						convert_json = JSON.parse(data)
+
+						if (convert_json.data === "sucess") {
+							// console.log(convert_json);
+							let pmData = convert_json.project_manager;
+
+							if (pmData.length === 0) {
+								$("#projectManagerText").html('None. <a href="#" class="changeProjectManager" data-toggle="modal" data-target="#modalEditManager">Add project manager.</a>');
+								console.log('No project manager.');
+							}
+							else {
+								let managerTeamId = pmData[0].PROJECT_TEAM_ID;
+								let managerUserId = pmData[0].USER_ID;
+								let managerName = pmData[0].FIRST_NAME + ' ' + pmData[0].LAST_NAME;
+
+								$("#projectManagerText").html('<a href="#" class="changeProjectManager" data-toggle="modal" data-target="#modalEditManager" data-team-id=' + managerTeamId + ' data-emp-id=' + managerUserId + '>' + managerName + '</a>');
+							}
+
+							// START - for EDIT PROJECT MANAGER MODAL
+
+							var empAvailabeList = convert_json.all_user;
+							$('#empList')
+								.find('option')
+								.remove()
+								.end()
+							$("#empList").append('<option value="" disabled selected hidden>Select Project Manager</option>');
+							$.each(empAvailabeList, function (key, value) {
+								$("#empList").append('<option value=' + value.ID + '>' + value.FIRST_NAME + ' ' + value.LAST_NAME + '</option>');
+							});
+
+							// END - for EDIT PROJECT MANAGER MODAL
+
+							// START - for ADD SPECIFICATION MODAL
+
+							// Scope
+							var projectScope = convert_json.projectScope;
+							$('#inputScope')
+								.find('option')
+								.remove()
+								.end()
+							$("#inputScope").append('<option value="" disabled selected hidden>Select Spec. Scope</option>');
+							$.each(projectScope, function (key, value) {
+								$("#inputScope").append('<option value=' + value.ID + '>' + value.NAME + '</option>');
+							});
+
+							// Assigned To
+							var teamMember = convert_json.teamMember;
+							$('#inputPerson')
+								.find('option')
+								.remove()
+								.end()
+							$("#inputPerson").append('<option value="" disabled selected hidden>Select User</option>');
+							$.each(teamMember, function (key, value) {
+								$("#inputPerson").append('<option value=' + value.ID + '>' + value.FULL_NAME + '</option>');
+							});
+
+							// END - for ADD SPECIFICATION MODAL
+
+							// START - INSERT DATA for OVERALL PROJECT TREEVIEW
+
+							// PROJECT
+
+							var current_project = convert_json.current_project
+							var data_project = {}
+							$.each(current_project, function (key, value) {
+								data_project = {
+									"id": value.PROJECT_ID_CUSTOM,
+									"parent": "#",
+									"text": value.NAME,
+									"icon": "fa-solid fa-folder"
+									// "icon": false,
+								};
+								($("#project_tree").jstree().settings.core.data).push(data_project);
+							});
+
+							// SCOPE(S)
+							var scopeList = convert_json.current_scope
+							var scope = {}
+							$.each(scopeList, function (key, value) {
+								scope = {
+									"id": value.SCOPE_ID_CUSTOM,
+									"parent": value.PROJECT_ID_CUSTOM,
+									"text": value.NAME,
+									"icon": "fa-sharp fa-solid fa-folder-open",
+									// "icon": false,
+								};
+								($("#project_tree").jstree().settings.core.data).push(scope);
+							});
+
+							// SPEC(S)
+							var specList = convert_json.current_spec
+							var data_spec = {}
+							$.each(specList, function (key, value) {
+								data_spec = {
+									"id": value.SPEC_ID_CUSTOM,
+									"parent": value.SCOPE_ID_CUSTOM,
+									"text": value.NAME,
+									"icon": "fa-sharp fa-solid fa-file-pen",
+									// "icon": false,
+								};
+								($("#project_tree").jstree().settings.core.data).push(data_spec);
+							});
+
+							$("#project_tree").jstree(true).refresh();
+
+							// END - INSERT DATA for OVERALL PROJECT TREEVIEW
+
+							// START: INSERT DATA for PROJECT FOLDER TREEVIEW
+                        
+							// FILE CATEGORY
+							var fileCategoryAll = convert_json.fileCategoryAll;
+							if (fileCategoryAll.length === 0) {
+								$('#projectFolderTree').hide();
+								$('#noDataTreeMessage').show();
+							}
+							else {
+								$('#noDataTreeMessage').hide();
+								$('#projectFolderTree').show();
+							}
+							var fileCategory = {}
+							$.each(fileCategoryAll, function (key, value) {
+								var parent = value.PARENT_ID;
+								if (parent === '0' || parent === null) {
+									parent = '#';
+								}
+								fileCategory = {
+									"id" : value.FILE_CATEGORY_ID_CUSTOM, 
+									"parent" : parent,
+									"text" : value.NAME,
+									"type": "folder"
+								};
+								($("#projectFolderTree").jstree(true).settings.core.data).push(fileCategory);
+							});
+							
+							// FILES
+							var fileList = convert_json.fileList;
+							var fileItem = {}
+							$.each(fileList, function (key, value) {
+								fileItem = {
+									"id": value.FILE_ID_CUSTOM,
+									"parent": value.FILE_CATEGORY_ID,
+									"text": value.FILE_NAME,
+									"icon": value.icon,
+									"type": "file",
+									"a_attr": {
+										// href: '/bl?tn=prom_project_file&cn=file&k=' + value.ID
+										href: '/files/' + value.ID
+									},
+									"li_attr": { "class": "file-link" }
+								};
+								($("#projectFolderTree").jstree(true).settings.core.data).push(fileItem);
+							});
+						
+							$("#projectFolderTree").jstree(true).refresh();
+							
+							// END: INSERT DATA for PROJECT FOLDER TREEVIEW
+
+							// START - Insert data into TEAM MEMBER TABLE
+							
+							let allMember = convert_json.allMember;
+							$('#team-member-list')
+								.find('li')
+								.remove()
+								.end()
+							if (allMember.length > 0) {
+								$('#no-team-member-message').hide();
+								$.each(allMember, function (key, value) {
+									let memberName = value.FIRST_NAME.toUpperCase() + ' ' + value.LAST_NAME.toUpperCase();
+									if (value.TEAM_ID === null) {
+										$("#team-member-list").append('<li>' + memberName + ' <b>(Project Manager)</b></li>');
+									}
+									else {
+										$("#team-member-list").append('<li>' + memberName + '</li>');
+									}
+								});
+							}
+							else {
+								$('#no-team-member-message').show();
+							}
+
+							// END - Insert data into TEAM MEMBER TABLE
+
+							console.log('success update page')
+
+						}
+					}, "json");
+
+			});
+
+			// if no project at all in DB, show modal to add project 	
+			try {
+				var latestProject = window.localStorage.getItem("latestProject");
+				if (latestProject) {
+					let exists = false;
+					$('#sel_project option').each(function () {
+						if (this.value == latestProject) {
+							exists = true;
+						}
+					});
+					if (exists == true) {
+						$("#sel_project").val(String(latestProject));
+						$("#sel_project").trigger("change");
+					}
+					else {
+						$("#sel_project").trigger("change");
+					}
+				}
+				else {
+					$("#sel_project").trigger("change");
+				}
+			}
+			catch (error) {
+				console.log('No project in DB.');
+				$('#noProjectNotify').modal('show');
+				$("#noProjectAddProjectBtn").click(function () {
+					$('#noProjectNotify').modal('hide');
+					$("#btnCloseModalAddProject").hide();
+					$('#addProject').modal({
+						backdrop: 'static',
+						keyboard: false
+					});
+					$('#addProject').modal('show');
+				});
+			}
+
+			function chartDemo() {
+				var areaChartData = {
+					labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+					datasets: [
+						{
+							label: 'Digital Goods',
+							backgroundColor: 'rgba(60,141,188,0.9)',
+							borderColor: 'rgba(60,141,188,0.8)',
+							pointRadius: false,
+							pointColor: '#3b8bba',
+							pointStrokeColor: 'rgba(60,141,188,1)',
+							pointHighlightFill: '#fff',
+							pointHighlightStroke: 'rgba(60,141,188,1)',
+							data: [28, 48, 40, 19, 86, 27, 90]
+						},
+						{
+							label: 'Electronics',
+							backgroundColor: 'rgba(210, 214, 222, 1)',
+							borderColor: 'rgba(210, 214, 222, 1)',
+							pointRadius: false,
+							pointColor: 'rgba(210, 214, 222, 1)',
+							pointStrokeColor: '#c1c7d1',
+							pointHighlightFill: '#fff',
+							pointHighlightStroke: 'rgba(220,220,220,1)',
+							data: [65, 59, 80, 81, 56, 55, 40]
+						},
+					]
+				}
+
+				var barChartCanvas = $('#barChart').get(0).getContext('2d')
+				var barChartData = $.extend(true, {}, areaChartData)
+				var temp0 = areaChartData.datasets[0]
+				var temp1 = areaChartData.datasets[1]
+				barChartData.datasets[0] = temp1
+				barChartData.datasets[1] = temp0
+
+				var barChartOptions = {
+					responsive: true,
+					maintainAspectRatio: false,
+					datasetFill: false
+				}
+
+				new Chart(barChartCanvas, {
+					type: 'bar',
+					data: barChartData,
+					options: barChartOptions
+				})
+			}
+
+		});
+
+	</script>
 
 </body>
+
 </html>
