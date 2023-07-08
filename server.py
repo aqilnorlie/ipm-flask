@@ -28,7 +28,7 @@ app.config["SECRET_KEY"] = os.environ.get("secret_key")  # set your own secret k
 @app.route("/", methods=["GET", "POST"])
 def login():
     if "email" in session:
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("project_list"))
 
     if request.method == "POST":
         email = request.form["email"]  # get data from email input
@@ -36,16 +36,17 @@ def login():
         password_hash = hashlib.md5(password.encode()).hexdigest()
         cur = con.cursor()
         user_info = cur.execute(
-            "SELECT first_name, last_name, email FROM ipm_user WHERE email = :1 AND password = :2",
+            "SELECT id, first_name, last_name, email FROM ipm_user WHERE email = :1 AND password = :2",
             (email, password_hash),
         )
         if user_info:
             detail = user_info.fetchall()
-            for fname, lname, email in detail:
+            for id, fname, lname, email in detail:
                 session["fname"] = fname  # insert name into session
                 session["lname"] = lname
                 session["email"] = email
-                return redirect(url_for("dashboard"))
+                session["user_id"] = id
+                return redirect(url_for("project_list"))
 
     return render_template("login.html")
 
@@ -57,7 +58,11 @@ def dashboard():
         print("currently at dashboard page")
         cur = con.cursor()
 
-        cur.execute("SELECT * from ipm_project")
+        cur.execute("""
+        select p.id, u.first_name, p.name from ipm_user u join ipm_project_team t on u.id = t.user_id join
+        ipm_project_team_junction j on t.id = j.project_team_id join ipm_project p on
+        p.id = j.project_id where u.id = :1 """,(session["user_id"],)
+        )
         columns = [col[0] for col in cur.description]
         cur.rowfactory = lambda *args: dict(zip(columns, args))
         data1 = cur.fetchall()
@@ -303,6 +308,153 @@ def dashboard():
 
                 # END: data for all team member
 
+                # START : data for all specification table
+                
+                cur.execute(
+                     """
+                    SELECT s.id,s.name spec_name, s.percentage,s.scope_id, c.name scope_name, u.first_name || ' ' || u.last_name as full_name,
+                    d.name duration, st.name status
+                    FROM ipm_specification s
+                    JOIN ipm_scope c ON s.scope_id = c.id
+                    JOIN ipm_user u ON u.id = s.assigned_user_id
+                    JOIN ipm_ref_status st ON st.id = s.status_id
+                    JOIN ipm_ref_duration d ON d.id = s.duration_id
+
+                    """
+                )
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                all_spec = cur.fetchall()
+                # END : data for all specification table
+
+                # START : data for simple bar chart
+                dataForBarArr = []
+                cur.execute(
+                    """
+                    SELECT * FROM ipm_project where id = :1
+                    """,(project_id,)
+                )
+
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                data_project_bar = cur.fetchall()
+
+                cur.execute("SELECT * from ipm_scope")
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                scope_all = cur.fetchall()
+
+                for i in data_project_bar:
+                    projectId = i.get("ID")
+                    dataForBarMap = {}
+                    dataForBarMap["project_id"] = i.get("ID") 
+                    dataForBarMap["project_name"] = i.get("NAME")
+                    totalPercentageScopeMap = {}
+                    totalPercentagePerProject = 0.00
+                    countScope = 0
+                    for b in scope_all:
+                        if b.get("PROJECT_ID") == projectId:
+                            scopeId = b.get("ID")
+                            totalPercentagePerScope = 0.00
+                            countScope += 1
+                            countSpec = 0
+                            for c in all_spec:
+                                if c.get("SCOPE_ID") == scopeId:
+                                    totalPercentagePerScope += float(c.get("PERCENTAGE"))
+                                    countSpec += 1
+                            if countSpec != 0:
+                                divSpec = totalPercentagePerScope / (countSpec * 100)
+                                multipliedSpec = '{:.2f}'.format(divSpec * 100)
+                                totalPercentageScopeMap[b.get("NAME")] = multipliedSpec
+                                totalPercentagePerProject += float(multipliedSpec)
+                            else:
+                                totalPercentageScopeMap[b.get("NAME")] = '{:.2f}'.format(0.00)
+                    if countScope != 0:
+                        divPro = totalPercentagePerProject / (countScope * 100)
+                        multipliedPro = '{:.2f}'.format(divPro * 100)
+                        dataForBarMap["total_percentage"] =  multipliedPro
+                        dataForBarMap["scope_percentage"] = totalPercentageScopeMap
+                        dataForBarArr.append(dataForBarMap)
+                    else:
+                        dataForBarMap["total_percentage"] =  '{:.2f}'.format(0.00)
+                        dataForBarMap["scope_percentage"] =  totalPercentageScopeMap
+                        dataForBarArr.append(dataForBarMap)
+                    # END : data for simple bar chart
+
+                # START - RIGHT SIDE 
+                # to get id employee and name based on project id 
+                cur.execute(
+                    """
+                    SELECT DISTINCT e.first_name || ' ' || e.last_name as full_name , e.id from ipm_project_team_junction p join ipm_project_team 
+                    s on s.id = p.project_team_id join ipm_user e on e.id = s.user_id where s.team_id IS not NULL and p.project_id = :1
+                    """, (project_id,)
+                )
+
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                get_team = cur.fetchall()
+                
+                # get all member with manager
+                cur.execute(
+                    """
+                    select DISTINCT e.first_name || ' ' || e.last_name as full_name, e.id from ipm_project_team_junction p join ipm_project_team 
+                    s on s.id = p.project_team_id join ipm_user e on e.id = s.user_id where p.project_id = :1
+                    """, (project_id,)
+                )
+
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                all_team = cur.fetchall()
+
+                cur.execute(
+                    """
+                    select sp.id,sp.name,sp.description,sp.added_date,sp.percentage,sp.spec_id_custom,sp.scope_id,sp.status_id,
+                    sp.duration_id,sp.assigned_user_id from ipm_specification sp 
+                    join ipm_scope s on sp.scope_id = s.id where s.project_id = :1
+
+                    """, (project_id,)
+                )
+
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                specListProject = cur.fetchall()
+            
+                list_task = []
+                name_task = {}
+                for e in all_team:
+                    if specListProject:
+                        for i in specListProject:
+                            if i.get("ASSIGNED_USER_ID") == e.get("ID"):
+                                name_id = e.get("FULL_NAME") + "_" + str(e.get("ID"))
+                                list_task.append(i.get("NAME")) 
+                                name_task[name_id] = list_task
+                            else:
+                                name_id = e.get("FULL_NAME") + "_" + str(e.get("ID"))
+                                name_task[name_id] = list_task
+                
+                    else:
+                        name_id = e.get("FULL_NAME") + "_" + str(e.get("ID"))
+                        name_task[name_id] = list_task
+                    list_task = []
+
+                dict_data = {}
+                for e in all_team:
+                    dict_data[e.get("FULL_NAME")] = {}
+                    for i in specListProject:
+                        dict_data[e.get("FULL_NAME")][i.get("NAME")] = 0
+                        if i.get("ASSIGNED_USER_ID") == e.get("ID"):
+                            dict_data[e.get("FULL_NAME")][i.get("NAME")] = i.get("PERCENTAGE")
+                
+                dict_test = {}
+                for i in specListProject:
+                    dict_test[i.get("NAME")] = {}
+                    for e in all_team:
+                        dict_test[i.get("NAME")][e.get("FULL_NAME")] = 0
+                        if i.get("ASSIGNED_USER_ID") == e.get("ID"):
+                            dict_test[i.get("NAME")][e.get("FULL_NAME")] = i.get("PERCENTAGE")
+                
+                # END - RIGHT SIDE
+
                 return (
                     json.dumps({
                         "data": "sucess",
@@ -315,11 +467,17 @@ def dashboard():
                         "current_spec": current_spec,
                         "fileCategoryAll": fileCategoryAll,
                         "fileList": fileList,
-                        "allMember": all_member
+                        "allMember": all_member,
+                        "all_spec" : all_spec,
+                        "dataForBar" : dataForBarArr,
+                        "dict_data" : dict_data,
+                        "dict_test" : dict_test
+                        
                     }), 
                     200,
                     {"ContentType": "application/json"},
-                ) 
+                )
+                
 
             if request.form["d_action"] == "delete_project_manager":
                 manager_team_id = request.form["managerTId"]
@@ -1351,6 +1509,145 @@ def dashboard():
                         
                 return (json.dumps({"data": "sucess"}), 200, {"ContentType": "application/json"},)
 
+            # START GET SPEC
+            if request.form["d_action"] == "getSpec":
+                spec_data = json.loads(request.form["iid"])
+                cur.execute("select name, description, scope_id, percentage from ipm_specification where id = :1", (spec_data,))
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                spec_detail = cur.fetchall()
+
+                return (
+                    json.dumps({
+                        "spec_detail": spec_detail
+                    }),
+                    200,
+                    {"ContentType": "application/json"},
+                )
+            # END GET SPEC
+
+            #START UPDATE SPEC.
+            if request.form['d_action'] == "update_spec":
+                form_data = json.loads(request.form['data_form'])
+                project_id = request.form["project_id"]
+
+                # check if spec. name is used
+                spec_name = str(form_data["name"]).lower()
+                cur.execute(
+                    """
+                    select s.name from ipm_project p join ipm_scope sc on p.id = sc.project_id
+                    join ipm_specification s on sc.id = s.scope_id where p.id = :1 and s.id != :2
+                    """, (project_id, form_data["specId"])
+                )
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                allSpec = cur.fetchall()
+                specExist = 0
+                specNameList = []
+                for spec in allSpec:
+                    specNameList.append(str(spec.get("NAME")).lower())
+                if (spec_name in specNameList):
+                    specExist = 1
+                    return (json.dumps({"specExist": 1}),200,{"ContentType": "application/json"},
+                )
+                    
+                if(specExist == 0):
+                    spec_id = form_data["specId"]
+                    spec_name = form_data["name"]
+                    spec_desc = form_data["desc"]
+                    cur.execute("""
+                            UPDATE ipm_specification
+                            SET 
+                                name = :1,
+                                description = :2
+                            WHERE id = :3
+                            """,
+                            (spec_name,spec_desc,spec_id)
+                        )
+                    con.commit()
+                    return (json.dumps({"specExist": 0}), 200, {"ContentType": "application/json"},)
+            #END UPDATE SPEC
+
+            # UPDATE SPEC - SCOPE ONLY
+            if request.form["d_action"] == "updateSpecScope":
+                cur.execute("""
+                            UPDATE ipm_specification
+                            SET 
+                                scope_id = :1
+                            WHERE id = :2
+                            """,
+                            (int(request.form["specScope"]),int(request.form["specIdScope"]))
+                        )
+                con.commit()
+
+            # UPDATE Assigned Person
+            if request.form["d_action"] == "updateAssignedTo":
+                cur.execute(
+                    """
+                    Update ipm_specification
+                    SET
+                        assigned_user_id = :1
+                    WHERE id = :2
+                    """,
+                    (int(request.form["assignedEmp"]),int(request.form["specIdEmp"]))
+                ) 
+                con.commit()
+
+            # UPDATE PECENTAGE
+            if request.form["d_action"] == "update_percentage":
+                data = json.loads(request.form["data"])
+                cur.execute(
+                     """
+                     update ipm_specification 
+                     SET
+                        percentage = :1
+                    WHERE id = :2
+                     """,
+                    (int(data["percentage"]), int(data["spec_id"]))
+                )
+                if int(data["percentage"]) == 100:
+                    cur.execute(
+                    """
+                    update ipm_specification 
+                    SET
+                        status_id = :1
+                    WHERE id = :2
+                    """,
+                    (3, int(data["spec_id"]))
+                    )
+                else:
+                    cur.execute(
+                    """
+                    update ipm_specification 
+                    SET
+                        status_id = :1
+                    WHERE id = :2
+                    """,
+                    (2, int(data["spec_id"]))
+                    )
+                con.commit()
+                return (json.dumps({"data": "sucess"}), 200, {"ContentType": "application/json"},)
+            
+            # UPDATE START JOB
+            if request.form["d_action"] == "start_job":
+                cur.execute(
+                    """
+                    update ipm_specification
+                    SET
+                        status_id = :1
+                    where id = :2
+                    """, (2, int(request.form["spec_id"]))
+                )
+                con.commit()
+
+            # DELETE SPEC
+            if request.form["d_action"] == "remove_spec":
+                cur.execute(
+                    """
+                    DELETE from ipm_specification where id = :1
+                    """, (int(request.form["spec_id"]),)
+                )
+                con.commit()
         cur.close()
 
         return render_template(
@@ -1458,8 +1755,45 @@ def logout():
     return redirect(url_for("login"))  # go to login page
 
 
-@app.route("/profile")
+@app.route("/profile", methods=["GET", "POST"])
 def profile():
+    if request.method == "POST":
+        if request.form["d_action"] == "update_user":
+            user_data = request.form["user_data"]
+            insert_data = json.loads(user_data)
+            fname = insert_data["fname"]
+            lname = insert_data["lname"]
+            email = insert_data["email"]
+            # UPDATE DETAIL
+            cur = con.cursor()
+            cur.execute(
+                """
+                UPDATE ipm_user
+                        SET email = :1,
+                            first_name = :2,
+                            Last_name = : 3
+                        WHERE ID = :4
+
+                """, (email,fname,lname,session["user_id"]))
+            con.commit()
+            
+            cur.execute("select email, first_name, last_name from ipm_user where id = :1", (session["user_id"],))
+            columns = [col[0] for col in cur.description]
+            cur.rowfactory = lambda *args: dict(zip(columns, args))
+            user_detail = cur.fetchall()
+        
+            # SET SESSION AFTER UPDATE DETAIL
+            session["fname"] = user_detail[0].get("FIRST_NAME")
+            session["lname"] = user_detail[0].get("LAST_NAME")
+            session["email"] = user_detail[0].get("EMAIL")
+
+            return(
+                json.dumps({"data": "success"}),
+                200,
+                {"ContentType": "application/json"},
+            )
+
+   
     return render_template(
         "profile.html",
         name=session["fname"],
@@ -1467,49 +1801,239 @@ def profile():
         email=session["email"],
     )
 
-@app.route("/project-list")
+@app.route("/Project-List", methods=["GET", "POST"])
 def project_list():
-    cur = con.cursor()
 
+    cur = con.cursor()
+    user_id = session["user_id"]  #Type int
     cur.execute(
         """
-        SELECT p.id, p.name, pub.request_to_join, pri.password 
+        SELECT DISTINCT p.*,
+        (CASE 
+            WHEN user_id = :1 THEN 'joined'
+            ELSE 'not join'
+        END) AS Result,
+        (CASE 
+            WHEN pub.request_to_join IS NULL THEN 'Private'
+            WHEN pub.request_to_join = '1' THEN 'Public (Request)'
+            ELSE 'Public'
+        END) AS STATUS
         FROM ipm_project p
         LEFT JOIN ipm_project_public pub ON pub.project_id = p.id
         LEFT JOIN ipm_project_private pri ON pri.project_id = p.id
-        order by p.id asc
-        """
+        JOIN ipm_project_team_junction pt ON p.id = pt.project_id
+        JOIN ipm_project_team i ON i.id = pt.project_team_id
+        ORDER BY p.id ASC
+        
+        """, (user_id,)
     )
+    
     columns = [col[0] for col in cur.description]
     cur.rowfactory = lambda *args: dict(zip(columns, args))
     all_projects = cur.fetchall()
 
-    # - nombor
-    # - project name
-    # - join status
-    # - access status
-    # - action button utk join
-
-    iter = 1
-    for p in all_projects:
-        p["iter"] = iter
-        if p["REQUEST_TO_JOIN"] == None:
-            p["project_type"] = "Private"
-        elif p["PASSWORD"] == None:
-            if p["REQUEST_TO_JOIN"] == 1:
-                p["project_type"] = "Public (Request To Join)"
+    temp = []
+    result = []
+    num = 1
+    for i in all_projects:
+        i["iter"] = num
+        temp.append(i.get("ID"))
+        if temp.count(i.get("ID")) > 1:
+            if i.get("RESULT") == "joined":
+                result.append(i)
+                num += 1
             else:
-                p["project_type"] = "Public"
-        iter += 1
+                i.clear()
+        else:
+            result.append(i)
+            num += 1
 
+    # Get Notification
+    cur.execute(
+        """
+        select p.name as project_name, n.id as noti_id, p.id as project_id,u.id as user_id, u.first_name ||' '|| u.last_name as full_name from ipm_project p join ipm_project_team_junction j on p.id = j.project_id
+        join ipm_project_team t on t.id = j.project_team_id join ipm_notification n on n.id_project = p.id join ipm_user u on u.id = n.user_id_request
+        where p.id in (select n.id_project from ipm_notification n join ipm_project p on n.id_project = p.id) and t.team_id is null and t.user_id = :1
+        """,(user_id,))
+    
+    columns = [col[0] for col in cur.description]
+    cur.rowfactory = lambda *args: dict(zip(columns, args))
+    notification = cur.fetchall()
+    test = notification
+    count_noti = len(test)
+    if request.method == "POST":
+
+        # Accecpt request and delete the notification
+        if request.form["d_action"] == "accept_request":
+            print(request.form["noti_id"])
+            id_project_request = request.form["project_id_accept"]
+            user_id_request = request.form["user_id_request"]
+            noti_id = request.form["noti_id"]
+            cur.execute(
+                """
+                SELECT p.name, j.project_team_id as team_id from ipm_project p join ipm_project_team_junction j on p.id = j.project_id
+                where p.id = :1
+                
+                """,(id_project_request,)
+            )
+            columns = [col[0] for col in cur.description]
+            cur.rowfactory = lambda *args: dict(zip(columns, args))
+            project_req = cur.fetchall()
+
+            cur.execute("INSERT INTO ipm_project_team values(ipm_project_team_SEQ.nextval, :2, :3)",(project_req[0].get("TEAM_ID"), user_id_request))
+            con.commit()
+
+            cur.execute("SELECT id FROM ipm_project_team WHERE ROWNUM <= 1 ORDER BY id DESC")
+            columns = [col[0] for col in cur.description]
+            cur.rowfactory = lambda *args: dict(zip(columns, args))
+            team_id_req = cur.fetchall()
+
+            cur.execute(
+                """
+                INSERT INTO ipm_project_team_junction values(ipm_project_team_junction_SEQ.nextval,:2, :3)
+                """, (team_id_req[0].get("ID"), id_project_request)
+            )
+            con.commit()
+
+            cur.execute(
+                """
+                Delete from ipm_notification where id =: 1
+                """, (int(noti_id),)
+            )
+            con.commit()
+            return(
+                json.dumps({"data": "success"}),
+                200,
+                {"ContentType": "application/json"},
+            )
+        if request.form["d_action"] == "request_exist":
+                project_id = request.form["project_id"]
+                cur.execute("select * from ipm_notification where id_project  = :1 and user_id_request = :2", (project_id, user_id))
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                noti = cur.fetchall()
+
+                if len(noti) > 0:
+                    return(
+                        json.dumps({"data": "exist"}),
+                        200,
+                        {"ContentType": "application/json"},
+                    )
+                else:
+                    return(
+                        json.dumps({"data": "not"}),
+                        200,
+                        {"ContentType": "application/json"},
+                    )
+        if request.form["d_action"] == "join_public_project":
+            project_id = request.form["project_id"]
+            cur.execute(
+                """
+                    SELECT p.name, j.project_team_id as team_id from ipm_project p join ipm_project_team_junction j on p.id = j.project_id
+                    where p.id = :1
+                """,(project_id,)
+                )
+            columns = [col[0] for col in cur.description]
+            cur.rowfactory = lambda *args: dict(zip(columns, args))
+            public = cur.fetchall()
+            cur.execute("INSERT INTO ipm_project_team values(ipm_project_team_SEQ.nextval, :2, :3)",(public[0].get("TEAM_ID"), user_id))
+            con.commit()
+
+            cur.execute("SELECT id FROM ipm_project_team WHERE ROWNUM <= 1 ORDER BY id DESC")
+            columns = [col[0] for col in cur.description]
+            cur.rowfactory = lambda *args: dict(zip(columns, args))
+            team_id = cur.fetchall()
+
+            cur.execute(
+                """
+                INSERT INTO ipm_project_team_junction values(ipm_project_team_junction_SEQ.nextval,:2, :3)
+                """, (team_id[0].get("ID"), project_id)
+            )
+            con.commit()
+            return(
+                json.dumps({"data": "success"}),
+                200,
+                {"ContentType": "application/json"},
+            )
+
+
+
+        if request.form["d_action"] == "insert_password_private":
+            access = request.form["access"]
+            if access == "Private":
+                project_id = request.form["project_id"]
+                password = request.form["pass"]
+                password_hash = hashlib.md5(password.encode()).hexdigest()
+
+                cur.execute( #j.id
+                    """
+                    select pri.*, j.project_team_id as team_id from ipm_project_private pri join ipm_project p on p.id = pri.project_id
+                    join ipm_project_team_junction j on j.project_id = p.id 
+                    where pri.project_id = :1
+                    AND pri.Password = :2
+                    """, (project_id, password_hash)
+                )
+
+                columns = [col[0] for col in cur.description]
+                cur.rowfactory = lambda *args: dict(zip(columns, args))
+                project_private = cur.fetchall()
+
+                if len(project_private) > 0:
+                    cur.execute(
+                        """
+                            INSERT INTO ipm_project_team values(ipm_project_team_SEQ.nextval, :2, :3)
+                        """, (project_private[0].get("TEAM_ID"), user_id)
+                    )
+                    con.commit()
+
+                    cur.execute("SELECT id FROM ipm_project_team WHERE ROWNUM <= 1 ORDER BY id DESC")
+                    columns = [col[0] for col in cur.description]
+                    cur.rowfactory = lambda *args: dict(zip(columns, args))
+                    team_id = cur.fetchall()
+
+                    cur.execute(
+                        """
+                        INSERT INTO ipm_project_team_junction values(ipm_project_team_junction_SEQ.nextval,:2, :3)
+                        """, (team_id[0].get("ID"), project_id)
+                        )
+                    con.commit()
+
+                    return (
+                        json.dumps({"data": "success"}),
+                        200,
+                        {"ContentType": "application/json"},
+                        )
+                return(
+                    json.dumps({"data": "wrong"}),
+                    200,
+                    {"ContentType": "application/json"},
+                ) 
+            
+        if request.form["d_action"] == "insert_noti":
+                project_id = request.form["project_id"]
+                cur.execute(
+                    """
+                    INSERT INTO ipm_notification values(ipm_notification_SEQ.nextval, :2, :3, :4)
+                    """,(project_id, user_id, 0)
+                )
+
+                con.commit()
+                return(
+                    json.dumps({"data": "success"}),
+                    200,
+                    {"ContentType": "application/json"},
+                ) 
+            
     cur.close()
-
     return render_template(
         "project_list.html",
-        name=session["fname"],
-        lname=session["lname"],
-        email=session["email"],
-        projects=all_projects
+        user_id = session["user_id"],
+        name = session["fname"],
+        lname = session["lname"],
+        email = session["email"],
+        projects = result,
+        notification = notification,
+        count_noti = count_noti
     )
 
 
