@@ -29,6 +29,8 @@
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/css/ion.rangeSlider.min.css"/>
+	
 </head>
 <style>
 	.card-header {
@@ -350,28 +352,28 @@
 							</div>
 						</div>
 
-						<div class="col-7">
+						<!-- START: RIGHT SIDE -->
+						<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 col-xl-7">
 							<div class="card mb-3">
 								<div class="card-header">
-									<h4><i class="fas fa-chart-bar"></i>Scope Progress</h4>
+									<h3><i class="fa-solid fa-chart-column margin-for-icon"></i>Scope Progress</h3>
 								</div>
+									
 								<div class="card-body" id="cardSimpleBar">
-									<div class="chart">
-										<canvas id="barChart"
-											style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-									</div>
+									<canvas id="simpleBarCanvas"></canvas>
 								</div>
+								
 								<div class="card-header" id="cardHeaderRight">
-									<h4><i class="fas fa-chart-bar"></i>Team Member Progress</h4>
+									<h3><i class="fa-solid fa-chart-bar margin-for-icon"></i>Team Member Progress</h3>
 								</div>
+							
+								<!--- add barChart -->
 								<div class="card-body" id="cardHorizontalBar">
-									<h5 class="card-title">Special title treatment</h5>
-									<p class="card-text">With supporting text below as a natural lead-in to additional
-										content.</p>
-									<a href="#" class="btn btn-primary">Go somewhere</a>
+									<canvas id="barChartRight"></canvas>
 								</div>
 							</div>
 						</div>
+					<!-- END: RIGHT SIDE -->
 					</div>
 						
 					<div class="row">
@@ -390,43 +392,9 @@
 
 								<div class="card-body">
 									<div class="table-responsive">
-										<table id="example2" class="table table-bordered table-hover">
-											<thead>
-												<tr>
-													<th>Rendering engine</th>
-													<th>Browser</th>
-													<th>Platform(s)</th>
-													<th>Engine version</th>
-													<th>CSS grade</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>Trident</td>
-													<td>Internet
-														Explorer 4.0
-													</td>
-													<td>Win 95+</td>
-													<td> 4</td>
-													<td>X</td>
-												</tr>
-												<tr>
-													<td>Other browsers</td>
-													<td>All others</td>
-													<td>-</td>
-													<td>-</td>
-													<td>U</td>
-												</tr>
-											</tbody>
-											<tfoot>
-												<tr>
-													<th>Rendering engine</th>
-													<th>Browser</th>
-													<th>Platform(s)</th>
-													<th>Engine version</th>
-													<th>CSS grade</th>
-												</tr>
-											</tfoot>
+										<table id="spec_table" class="table table-bordered table-hover"  width="100%">
+											<thead id="thead_spec"></thead>
+											<tbody id="tbody_spec"></tbody>
 										</table>
 									</div> <!-- /table-responsive -->
 								</div>
@@ -938,6 +906,140 @@
 	</div>
 	<!-- END: modal UPDATE SPEC. (OVERALL PROJECT VIEW TREE) -->
 
+	 <!-- START: modal UPDATE INFORMATION - SPEC [NAME, DESCRIPTION] -->
+	 <div class="modal fade custom-modal" id="specModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+		<form id="updateSpecFormTable" action="{{url_for('dashboard')}}" method="POST">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel2">Update Information</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					
+					<div class="modal-body">
+						<div id='errorUpdateSpecTable' class="hidden alert alert-danger alert-dismissible fade show" role="alert">
+							<p class='forAlert' id='errorUpdateSpecTableContent'></p>
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Name</label>
+							<input type="text" class="form-control form-control-sm" name="spec_name" id="spec-name"/>
+						</div>
+						<div class="form-group">
+							<label for="inputDesc">Description</label>
+							<textarea class="form-control form-control-sm textareaDesc" name="spec_desc" id="spec-desc"></textarea>
+						</div>
+					</div>
+					
+					<div class="modal-footer">
+						<input type="hidden" name="spec_id" id="spec_id2" value="" />
+						<!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+						<button type="submit" class="btn btn-success">Update</button>
+					</div>
+					
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- END: modal UPDATE INFORMATION - SPEC [NAME, DESCRIPTION, TAG] -->
+
+	       <!-- START: modal UPDATE INFORMATION - SPEC [SPEC. SCOPE] -->
+		   <div class="modal fade custom-modal" id="changeSpecScope" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+            <form action="{{url_for('dashboard')}}" method="POST">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h5 class="modal-title">Change Scope</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="specScope">Spec. Scope</label>
+                                <select name="specScope" id="specScope" class="form-control form-control-sm"></select>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <input type="hidden" name="specIdScope" id="specIdScope" value=""/>
+                            <button type="submit" name="d_action" value="updateSpecScope" class="btn btn-success">Update</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- END: modal UPDATE INFORMATION - SPEC [SPEC. SCOPE] -->
+
+        <!-- START: modal UPDATE INFORMATION - SPEC [ASSIGNED TO] -->
+        <div class="modal fade custom-modal" id="editAssignedTo" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+            <form action="{{url_for('dashboard')}}" method="POST">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h5 class="modal-title">Change Assigned Employee</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="assignedEmp">Assigned Employee</label>
+                                <select name="assignedEmp" id="assignedEmp" class="form-control form-control-sm"></select>
+                            </div>
+                        </div>
+                        
+                        <div class="modal-footer">
+                            <input type="hidden" name="specIdEmp" id="specIdEmp" value=""/>
+                            <button type="submit" name="d_action" value="updateAssignedTo" class="btn btn-success">Update</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- END: modal UPDATE INFORMATION - SPEC [ASSIGNED TO] -->
+
+		   <!-- START: modal UPDATE PROGRESS -->
+		   <div class="modal fade custom-modal" id="percentageModal" tabindex="-1" role="dialog" aria-labelledby="addModal" aria-hidden="true">
+            <form id="transaction-form" method="POST">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel2">Update Progress</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="inputDesc">Progress (%)</label>
+                                <input type="text" class="js-range-slider" name="percentage_progress" value="" id="spec-percentage"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" name="spec_id" id="spec_id" value="" />
+                            <button type="button" id="update_progress_percentage" name="d_action" value="update_percentage" class="btn btn-success">Update</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- END: modal UPDATE PROGRESS -->
+
 	<!-- END: MODALS -->
 
 	<!-- ================================================================================================================================== -->
@@ -978,9 +1080,21 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.1/js/ion.rangeSlider.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js"></script>
 
 	<script>
 		$(document).ready(function () {
+
+			//Setup Slider
+			$("#spec-percentage").ionRangeSlider({
+                    min: 0,
+                    max: 100,
+                    from: 50,
+                    step: 5,
+                    grid: true
+            });
+            let my_range = $("#spec-percentage").data("ionRangeSlider");
 
 			$('#btn-add-project').click(function() {
 				$('.div-add-project-public, .div-add-project-private').hide();
@@ -1729,11 +1843,13 @@
 						$("#project_id_upload").val($("#sel_project").val());
 
 						convert_json = JSON.parse(data)
-
+						console.log($("#sel_project").val())
+						console.log("$$")
 						if (convert_json.data === "sucess") {
 							// console.log(convert_json);
 							let pmData = convert_json.project_manager;
-
+							console.log("@@")
+							console.log(pmData)
 							if (pmData.length === 0) {
 								$("#projectManagerText").html('None. <a href="#" class="changeProjectManager" data-toggle="modal" data-target="#modalEditManager">Add project manager.</a>');
 								console.log('No project manager.');
@@ -1909,13 +2025,330 @@
 							}
 
 							// END - Insert data into TEAM MEMBER TABLE
+						
+						// START : FOR TABLE
+						// SCOPE
+						var projectScope = convert_json.projectScope;
+						$('#specScope')
+                    		.find('option')
+                    		.remove()
+                    		.end()
+                    	$("#specScope").append('<option value="" disabled selected hidden>Select New Spec. Scope</option>');
+                    	$.each(projectScope, function (key, value) {
+                        	$("#specScope").append('<option value=' + value.ID + '>' + value.NAME + '</option>');
+                    	});
+
+						// Assigned To
+                        $('#assignedEmp')
+                            .find('option')
+                            .remove()
+                            .end()
+                        $("#assignedEmp").append('<option value="" disabled selected hidden>Select New Assigned Employee</option>');
+                        $.each(teamMember, function (key, value) {
+                            $("#assignedEmp").append('<option value=' + value.ID + '>' + value.FULL_NAME + '</option>');
+                        });
+
+						// END : FOR TABLE
+						
+						// START - Update Spec table
+						if ( $.fn.dataTable.isDataTable( '#spec_table' ) ) {
+                            $('#spec_table').DataTable().destroy();
+                        }
+						theader = "";
+							
+						theader += '<tr><th>' 
+								+ 'ID' + "</th><th>" 
+								+ 'NAME' + "</th><th>" 
+								+ 'SCOPE' + "</th><th>" 
+								+ 'DURATION' + "</th><th>" 
+								+ 'ASSIGNED TO' + "</th><th>"
+								+ 'PROGRESS (%)' + "</th><th>"
+								+ 'STATUS' + "</th><th>"
+								+ 'ACTION' + "</th></tr>";
+							
+							$("#thead_spec").html(theader);
+
+				
+							tbody = "";
+							countSpec = 0;
+							var all_spec = convert_json.all_spec
+							console.log(all_spec)
+							$.each(all_spec, function (key, value) {
+								var id = value.ID;
+								var name = value.SPEC_NAME;
+								var scope = value.SCOPE_NAME;
+								var duration = value.DURATION;
+								var assignedTo = value.FULL_NAME;
+								var progress = value.PERCENTAGE;
+								var status = value.STATUS;
+								countSpec++;
+								
+								var btnStartWorking = ''
+								if (String(status) === 'Completed') {
+									btnStartWorking = '<button disabled type="submit" class="btn btn-info btn-sm not-allowed" title="Completed" value="start_job" name="d_action"><i class="fa fa-play"></i></button>'
+								}
+								else if (String(status) === 'In-Progress') {
+									btnStartWorking = '<button disabled type="submit" class="btn btn-info btn-sm not-allowed" title="In-Progress" value="start_job" name="d_action"><i class="fa fa-play"></i></button>'
+								}
+								else {
+									btnStartWorking = '<button type="submit" class="btn btn-info btn-sm" title="Start working on this spec." value="start_job" name="d_action"><i class="fa fa-play"></i></button>'
+								}
+
+								tbody += '<tr><td class="td-center">'
+								+ id + '</td><td>'
+								+ '<a role="button" href="#" class="update-spec" data-toggle="modal" data-target="#specModal" data-number=' + id + '>' + name + '</a></td><td>'
+								+ '<a role="button" href="#" class="changeSpecScope" data-toggle="modal" data-target="#changeSpecScope" data-number=' + id + '>' + scope + '</a></td><td class="td-center">'
+								+ duration + '</td><td>'
+								+ '<a role="button" href="#" class="updateAssignedTo small-text" data-toggle="modal" data-target="#editAssignedTo" data-number=' + id + '>' + assignedTo + '</a></td><td class="td-center">'
+								+ '<a role="button" href="#" class="btn btn-dark btn-sm update-prog btn-block font-weight-bold" data-toggle="modal" data-number=' + id + ' data-target="#percentageModal">' + progress + '</a></td><td class="td-center">'
+								+ status + '</td><td class="td-center">'
+								+ '<form action="{{url_for("dashboard")}}" method="POST">'  
+								+ '<input type="hidden" name="spec_id" value=' + id + '>'
+								+ '<div class="btn-group" role="group">'
+									+ btnStartWorking
+									+ '<button type="button" class="btn btn-success btn-sm update-prog complete-prog" title="Completed" data-toggle="modal" data-number=' + id + ' data-target="#percentageModal"><i class="fa fa-flag-checkered"></i></button>'
+									+ '<button type="submit" class="btn btn-danger btn-sm" title="Remove" value="remove_spec" name="d_action"><i class="fa fa-trash"></i></button>'
+								+ '</div>'
+								+ '</form>'
+								+ '</td></tr>';
+							});
+							$("#tbody_spec").html(tbody);
+
+							table = $("#spec_table").DataTable( { 
+                            scrollX: true,
+                            	"language": {
+                                "emptyTable":     "No data to display",
+                                "info":           "Showing <b>_START_</b> to <b>_END_</b> out of <b>_TOTAL_</b> specification(s)",
+                                "infoEmpty":      "Showing <b>0</b> to <b>0</b> out of <b>0</b> specification(s)",
+                                "infoFiltered":   "[filtered from <b>_MAX_</b> total specification(s)]",
+                                "lengthMenu":     "Show _MENU_ specifications",
+                            }
+            	        	});
+            	        
+							// END - Update Spec table
+
+							 // START - data for BAR CHART
+            	        
+							projectInfo = convert_json.dataForBar;
+							var dict_data = convert_json.dict_data;
+                        	var dict_test = convert_json.dict_test;
+							$.each(projectInfo, function (key, value) {
+								scopeInfo = value.scope_percentage
+								$.each(scopeInfo, function (key, value) {
+									window.simpleBar.data.labels.push(key);
+								});
+							});
+							
+							var scopePercentArr = [];
+							$.each(projectInfo, function (key, value) {
+								scopeInfo = value.scope_percentage
+								$.each(scopeInfo, function (key, value) {
+									scopePercentArr.push(value);
+								});
+							});
+							
+							// color
+							var bgColorArr = [];
+							$.each(scopePercentArr, function (index, value) {
+								percentage = parseFloat(value);
+								if (percentage == 100.00) {
+									// bg-success
+									bgColorArr.push('#198754');
+								}
+								else if (percentage > 75.00) {
+									// bg-info
+									bgColorArr.push('#0dcaf0');
+								}
+								else if (percentage > 50.00) {
+									// bg-warning
+									bgColorArr.push('#ffc107');
+								}
+								else {
+									// bg-danger
+									bgColorArr.push('#dc3545');
+								}
+							});
+				
+							var dataSet = {}
+							$.each(projectInfo, function (key, value) {
+								dataSet = {
+									data: scopePercentArr,
+									backgroundColor: bgColorArr,
+									hoverBackgroundColor: bgColorArr,
+								};
+							});
+							window.simpleBar.data.datasets.push(dataSet);
+							
+							window.simpleBar.update();
+							
+							// END - data for BAR CHART
+
+							$.each(dict_data, function (key, value) {
+                            	window.barRight.data.labels.push(key);
+                        	});
+                        
+							var dataSet = {}
+							$.each(dict_test, function (key, value) {
+								var color = randomColor();
+								dataSet = {
+									label: key,
+									data: Object.values(value),
+									backgroundColor: color,
+									hoverBackgroundColor: color,
+								};
+								window.barRight.data.datasets.push(dataSet);
+							});
+						
+							window.barRight.update();
+
+
 
 							console.log('success update page')
 
 						}
 					}, "json");
 
+					// START - script for BAR CHART (LEFT SIDE)
+            	    
+            	    Chart.plugins.register({
+                        afterDraw: function(chart) {
+                            if (chart.data.datasets.length === 0 || chart.data.datasets[0].data.length === 0) {
+                                // No data is present
+                                var ctx = chart.chart.ctx;
+                                var width = chart.chart.width;
+                                var height = chart.chart.height
+                                chart.clear();
+                                
+                                ctx.save();
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.font = "16px normal 'Helvetica Nueue'";
+                                ctx.fillText('No data to display', width / 2, height / 2);
+                                ctx.restore();
+                            }
+                        }
+                    });
+
+					var ctx1 = document.getElementById("simpleBarCanvas").getContext('2d');
+                    if (window.simpleBar != undefined) { window.simpleBar.destroy(); }
+                    window.simpleBar = new Chart(ctx1, {
+                        type: 'bar',
+                        data: {
+                            labels: [],
+                            datasets: []
+                        },
+                        options: {
+                            // responsive: false,
+                            maintainAspectRatio: true,
+                            legend: {
+                                display: false
+                            },
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        suggestedMax: 120
+                                    }
+                                }]
+                            },
+                            plugins: {
+                                labels: {
+                                    render: function (args) {
+                                        strValue = String(args.value);
+                                        if (strValue === '100.00') {
+                                            return '100%';
+                                        }
+                                        else if (strValue.substr(3, 2) === '00') {
+                                            return strValue.substr(0, 2) + '%';
+                                        }
+                                        else if (strValue.substr(2, 2) === '00') {
+                                            return strValue.substr(0, 1) + '%';
+                                        }
+                                        else {
+                                            return args.value + '%';
+                                        }
+                                    },
+                                    fontColor: 'black',
+                                    textMargin: 10,
+                                    textShadow: true,
+                                }
+                            }
+                        }
+                    });
+
+					// START - script for BAR CHART (RIGHT SIDE)
+                    
+                    // var ctx2 = $('#barChartRight');
+                    // ctx2.height(5000);
+                    var ctx2 = document.getElementById("barChartRight").getContext('2d');
+                    if (window.barRight != undefined) { window.barRight.destroy(); }
+                    window.barRight = new Chart(ctx2, {
+                        type: 'horizontalBar',
+                        data: {
+                            labels: [],
+                            datasets: []
+                        },
+                        options: {
+                            borderWidth: 0,
+                            // responsive: false,
+                            maintainAspectRatio: true,
+                            interaction: {
+                                intersect: true,
+                                mode: 'index',
+                            },
+                            tooltips: {
+                                mode: 'point',
+                                filter: function (tooltipItem, data) {
+                                    var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                                    if (value === 0) {
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                }
+                            },
+                            indexAxis: 'y',
+                            scales: {
+                                // display: true,
+                                xAxes: [{
+                                    ticks: {
+                                        beginAtZero: true,
+                                        suggestedMax: 100,
+                                        callback: function(value, index, values) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }]
+                            },
+                            legend: {
+                                display: false
+                            },
+                            plugins: {
+                                labels: {
+                                    render: function (args) {
+                                        strValue = String(args.value);
+                                        if (strValue === '0') {
+                                            return null;
+                                        }
+                                        else {
+                                            return args.value + '%';
+                                        }
+                                    },
+                                    fontColor: 'black',
+                                    textMargin: 10,
+                                    textShadow: true,
+                                }
+                            }
+                        }
+                    });
+                    $("#cardHeaderLeft").height($("#cardHeaderRight").height());
+                    $("#cardBottomLeft").height($("#cardHorizontalBar").height());
+                    
+                    // END - script for BAR CHART (RIGHT SIDE)
+
 			});
+
+
 
 			// if no project at all in DB, show modal to add project 	
 			try {
@@ -1952,6 +2385,108 @@
 					$('#addProject').modal('show');
 				});
 			}
+
+			//START : UPDATE PROGRESS
+			$(document).on('click', '.update-prog', function(ev){
+					var itemId = $(this).attr("data-number");
+					if ($(this).hasClass("complete-prog")) {
+							my_range.update({from: 100});
+					} else {
+						$.post("{{url_for('dashboard')}}", {iid: itemId, d_action:"getSpec"}, function(data) {
+							$.each(data.spec_detail, function (key, value) {
+								my_range.update({from: value.PERCENTAGE});
+							});
+			
+						}, "json");
+					}
+					$("#spec_id").val(itemId);
+                });
+			
+			// START UPDATE SPECIFICATION
+			$(document)
+                .on('click', '.update-spec', function(ev){
+                    var itemId = $(this).attr("data-number");
+                    $.post("{{url_for('dashboard')}}", {iid: itemId, d_action:"getSpec"}, function(data) {
+						$.each(data.spec_detail, function (key, value) {
+							$("#spec_id2").val(itemId);
+                            $("#spec-desc").val(value.DESCRIPTION);
+                            $("#spec-name").val(value.NAME);
+						});
+                        
+                    }, "json");
+                });
+
+			// UPDATE SPEC. (TABLE)
+            $("#updateSpecFormTable").submit(function () {
+                var formData = {
+					specId: $("#spec_id2").val(),
+					name: $("#spec-name").val(),
+					desc: $("#spec-desc").val(),
+                };
+
+                var formDataJSON = JSON.stringify(formData);
+                $.post("{{url_for('dashboard')}}", { d_action: "update_spec", data_form: formDataJSON, project_id: $('#sel_project').val() } , function( data ) {
+					// Updated spec. name already used
+					console.log(data)
+					if (parseInt(data.specExist) === 1) {
+						$("#spec-name").focus();
+						$("#errorUpdateSpecTableContent").html('Updated <b>specification name</b> already exists for this project. Please enter a different specification name.');
+						$("#errorUpdateSpecTable").show();
+					}
+					else {
+						location.reload();
+					}
+				}, "json");
+				return false;
+                });
+
+			// END UPDATE SPECIFICATION
+
+			// UPDATE PERCENT
+			$("body").on("click", "#update_progress_percentage", function(e) { 
+					let percentage = $("#spec-percentage").val()
+					let spec_id = $("#spec_id").val()
+					
+					let dict_data = {
+						percentage : percentage,
+						spec_id : spec_id
+					}
+					let format_data = JSON.stringify(dict_data)
+					$.post("{{url_for('dashboard')}}", {d_action: "update_percentage", data: format_data}, function(data){
+						console.log(data.data)
+						if(data.data == "sucess"){
+							location.reload();
+						}
+					},"json");
+					
+					e.preventDefault();
+                     
+                     
+            });
+			// END UPDATE PERCENT
+
+			$(document).on('click', '.updateAssignedTo', function(ev){
+				var itemId = $(this).attr("data-number");
+				$.post("{{url_for('dashboard')}}", {iid: itemId, d_action:"getSpec"}, function(data) {
+					$.each(data.spec_detail, function (key, value) {
+						$("#specIdEmp").val(itemId);
+						$("#assignedEmp").val(value.ASSIGNED_USER_ID);
+					});
+					
+				}, "json");
+			});
+			
+			$(document).on('click', '.changeSpecScope', function(ev){
+                var itemId = $(this).attr("data-number");
+                $.post("{{url_for('dashboard')}}", {iid: itemId, d_action:"getSpec"}, function(data) {
+					$.each(data.spec_detail, function (key, value) {
+						$("#specIdScope").val(itemId);
+                        $("#specScope").val(value.SCOPE_ID);
+					});
+                    	
+                    }, "json");
+                
+				});
 
 			function chartDemo() {
 				var areaChartData = {
@@ -2001,6 +2536,7 @@
 					options: barChartOptions
 				})
 			}
+				
 
 		});
 

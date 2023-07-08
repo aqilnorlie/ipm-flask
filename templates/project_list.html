@@ -191,6 +191,34 @@
 					<a href="index3.html" class="nav-link">Home</a>
 				</li>
 			</ul>
+			<!-- Right navbar links -->
+			<ul class="navbar-nav ml-auto">
+				<!-- Messages Dropdown Menu -->
+				<li class="nav-item dropdown">
+					<a class="nav-link" data-toggle="dropdown" href="#">
+						<i class="far fa-comments"></i>
+						{% if count_noti >= 1 %}
+						<span class="badge badge-danger navbar-badge">{{count_noti}}</span>
+						{% endif %}
+					</a>
+					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+						{% for noti in notification %}
+						<a href="#" class="dropdown-item join_request" data-noti-id = "{{noti['NOTI_ID']}}" data-project-accept ="{{noti['PROJECT_ID']}}" data-user-id="{{noti['USER_ID']}}" style="overflow: scroll;">
+						<div class="media">
+							<div class="media-body">
+							<h3 class="dropdown-item-title">
+								{{noti["FULL_NAME"]}} Request to join Project : {{noti["PROJECT_NAME"]}}
+							</h3>
+							<p class="text-sm">Click This to accept</p>
+							</div>
+						</div>
+						<!-- Message End -->
+						</a>
+						<div class="dropdown-divider"></div>
+						{% endfor %}
+					</div>
+				</li>
+			</ul>
 		</nav>
 		<!-- /.navbar -->
 
@@ -210,7 +238,7 @@
 						<div class="col-3">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a href="#">Home</a></li>
-								<li class="breadcrumb-item active">Dashboard v1</li>
+								<li class="breadcrumb-item active">Project List</li>
 							</ol>
 						</div><!-- /.col -->
 					</div><!-- /.row -->
@@ -239,11 +267,20 @@
 											<tbody>
                                                 {% for p in projects %}
                                                 <tr>
-                                                    <td class="td-center">{{p['iter']}}.</td>
+                                                    <td class="td-center">{{ p["iter"] }}.</td>
                                                     <td>{{p['NAME']}}</td>
-                                                    <td class="td-center"><i>join status</i></td>
-                                                    <td class="td-center">{{p["project_type"]}}</td>
-                                                    <td class="td-center"><button type="button" class="btn btn-success btn-sm" title="Join Project" value="" name=""><i class="fa-solid fa-right-to-bracket"></i></button></td>
+                                                    <td class="td-center"><i>{{p["RESULT"]}}</i></td>
+                                                    <td class="td-center">{{p["STATUS"]}}</td>
+													{% if p["RESULT"] == "joined" %}
+														<td class="td-center"><button type="button" disabled id="btn_join_project" class="btn_join_project btn btn-danger btn-sm"
+														title="Join Project" data-project-id="{{p['ID']}}" name="project_id">
+														<i class="fa-solid fa-right-to-bracket"></i></button></td>
+													{% else %}
+                                                    <td class="td-center"><button type="button" id="btn_join_project" class="btn_join_project btn btn-success btn-sm"
+													title="Join Project" data-project-id="{{p['ID']}}" data-access="{{p['STATUS']}}" name="project_id">
+													<i class="fa-solid fa-right-to-bracket"></i></button></td>
+													{% endif %}
+
                                                 </tr>
                                                 {% endfor %}
 											</tbody>
@@ -283,6 +320,26 @@
 	</div>
 	<!-- ./wrapper -->
 
+	<!-- Modal -->
+	<div class="modal fade" id="modal_join" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+				<h5 class="modal-title" id="modal_label_change"></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				</div>
+				<div class="msg-alert"></div>
+				<div class="modal-body"></div>
+				<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button id="comfirm_join" type="button" class="btn btn-primary">Join</button>
+				</div>
+			</div>
+		</div>
+  </div>
+
 	<!-- jQuery -->
 	<script src="../static/plugins/jquery/jquery.min.js"></script>
 	<!-- jQuery UI 1.11.4 -->
@@ -320,13 +377,131 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.2/js/select2.min.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js'></script>
 
+
+</body>
 	<script>
 		$(document).ready(function () {
 
+		$(".join_request").on("click", function(){
+			var project_id = $(this).attr("data-project-accept");
+			var user_id = $(this).attr("data-user-id");
+			var noti_id = $(this).attr("data-noti-id")
+			
+			$.post("{{url_for('project_list')}}", {d_action:"accept_request", noti_id :noti_id, project_id_accept :project_id, user_id_request:user_id}, function(result) {
+				location.reload();
+			});
 		});
+	
+		var table = $('#example2').DataTable();
+		$("#example2").on("click", ".btn_join_project", function(){
+			// $( ".btn_join_project" ).on( "click", function() {
+			var project_id = $(this).attr("data-project-id");
+			var access = $(this).attr("data-access");
+			if (access == "Private"){
+				$("#modal_label_change").text("Project is Private (password required)")
+				$(".modal-body").html('<div class="input-group mb-3"><div class="input-group-prepend">' +
+					'<span class="input-group-text">Enter Password</span></div>'+
+					'<input id="password" name = "password_enter" type="password" class="form-control" placeholder="Password"' +
+					'aria-label="Password" aria-describedby="basic-addon1"></div>')
+					$("#comfirm_join").on("click", function(){
+						var password = $("#password").val()
+						$.post("{{url_for('project_list')}}", {d_action:"insert_password_private", project_id :project_id, access: access, pass: password }, function(result) {
+							if (result.data == "success"){
+								location.reload();
+							}else{
+								$(".msg-alert").html('<div class="alert alert-danger" role="alert">The password is wrong</div>').fadeIn().delay(1000).fadeOut();
+								$("#password").val("")
+							}
+						}, "json");
+					})
+			}else if (access == "Public (Request)"){
+					$("#modal_label_change").text("Project need to approve by Admin")
+					$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
+					$.post("{{url_for('project_list')}}", {d_action:"request_exist", project_id :project_id}, function(result) {
+							if(result.data == "exist"){
+								$(".modal-body").html('<p>You already request to join, Please wait until Project manager accept your request</p>')
+								$("#comfirm_join").prop('disabled', true);
+							}else{
+								$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
+								$("#comfirm_join").prop('disabled', false);
+							}
+						}, "json");
+					$("#comfirm_join").on("click", function(){
+						$.post("{{url_for('project_list')}}", {d_action:"insert_noti", project_id :project_id, access: access}, function(result) {
+							if (result.data == "success"){
+								location.reload();
+							}
+						}, "json");
+					})
+				}else{
+					$("#modal_label_change").text("Aavaible Join Project")
+					$(".modal-body").html('<p>Click Join button to join this project</p>')
+					$.post("{{url_for('project_list')}}", {d_action:"join_public_project", project_id :project_id}, function(result) {
+							if (result.data == "success"){
+								location.reload();
+							}
+						}, "json");
+					
+				}
 
+			 	$('#modal_join').modal('show');
+			// });
+		});
+		// $( ".btn_join_project" ).on( "click", function() {
+		// 	var project_id = $(this).attr("data-project-id");
+		// 	var access = $(this).attr("data-access");
+		// 	if (access == "Private"){
+		// 		$("#modal_label_change").text("Project is Private (password required)")
+		// 		$(".modal-body").html('<div class="input-group mb-3"><div class="input-group-prepend">' +
+		// 			'<span class="input-group-text">Enter Password</span></div>'+
+		// 			'<input id="password" name = "password_enter" type="password" class="form-control" placeholder="Password"' +
+		// 			'aria-label="Password" aria-describedby="basic-addon1"></div>')
+		// 			$("#comfirm_join").on("click", function(){
+		// 				var password = $("#password").val()
+		// 				$.post("{{url_for('project_list')}}", {d_action:"insert_password_private", project_id :project_id, access: access, pass: password }, function(result) {
+		// 					if (result.data == "success"){
+		// 						location.reload();
+		// 					}else{
+		// 						$(".msg-alert").html('<div class="alert alert-danger" role="alert">The password is wrong</div>').fadeIn().delay(1000).fadeOut();
+		// 						$("#password").val("")
+		// 					}
+		// 				}, "json");
+		// 			})
+		// 	}else if (access == "Public (Request)"){
+		// 			$("#modal_label_change").text("Project need to approve by Admin")
+		// 			$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
+		// 			$.post("{{url_for('project_list')}}", {d_action:"request_exist", project_id :project_id}, function(result) {
+		// 					if(result.data == "exist"){
+		// 						$(".modal-body").html('<p>You already request to join, Please wait until Project manager accept your request</p>')
+		// 						$("#comfirm_join").prop('disabled', true);
+		// 					}else{
+		// 						$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
+		// 						$("#comfirm_join").prop('disabled', false);
+		// 					}
+		// 				}, "json");
+		// 			$("#comfirm_join").on("click", function(){
+		// 				$.post("{{url_for('project_list')}}", {d_action:"insert_noti", project_id :project_id, access: access}, function(result) {
+		// 					if (result.data == "success"){
+		// 						location.reload();
+		// 					}
+		// 				}, "json");
+		// 			})
+		// 		}else{
+		// 			$("#modal_label_change").text("Aavaible Join Project")
+		// 			$(".modal-body").html('<p>Click Join button to join this project</p>')
+		// 			$.post("{{url_for('project_list')}}", {d_action:"join_public_project", project_id :project_id}, function(result) {
+		// 					if (result.data == "success"){
+		// 						location.reload();
+		// 					}
+		// 				}, "json");
+					
+		// 		}
+
+		// 	$('#modal_join').modal('show');
+		// } );
+	});
 	</script>
 
-</body>
+
 
 </html>
