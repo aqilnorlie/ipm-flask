@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>(ICT502) IPM | Project List</title>
+	<title>IPM | Project List</title>
 
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet"
@@ -187,9 +187,9 @@
 				<li class="nav-item">
 					<a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
 				</li>
-				<li class="nav-item d-none d-sm-inline-block">
-					<a href="index3.html" class="nav-link">Home</a>
-				</li>
+				<!-- <li class="nav-item d-none d-sm-inline-block">
+					<a href="#" class="nav-link">Home</a>
+				</li> -->
 			</ul>
 			<!-- Right navbar links -->
 			<ul class="navbar-nav ml-auto">
@@ -218,6 +218,12 @@
 						{% endfor %}
 					</div>
 				</li>
+				
+				<li class="nav-item">
+					<a class="nav-link" data-widget="fullscreen" href="#" role="button">
+					  <i class="fas fa-expand-arrows-alt"></i>
+					</a>
+				  </li>
 			</ul>
 		</nav>
 		<!-- /.navbar -->
@@ -304,13 +310,7 @@
 			<!-- /.content -->
 		</div>
 		<!-- /.content-wrapper -->
-		<footer class="main-footer">
-			<strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">Project Management system.io</a>.</strong>
-			All rights reserved.
-			<div class="float-right d-none d-sm-inline-block">
-				<b>Version</b> 3.2.0
-			</div>
-		</footer>
+		{% include 'footer.html' %}
 
 		<!-- Control Sidebar -->
 		<aside class="control-sidebar control-sidebar-dark">
@@ -394,10 +394,11 @@
 	
 		var table = $('#example2').DataTable();
 		$("#example2").on("click", ".btn_join_project", function(){
-			// $( ".btn_join_project" ).on( "click", function() {
 			var project_id = $(this).attr("data-project-id");
 			var access = $(this).attr("data-access");
-			if (access == "Private"){
+			if (access === "Private"){
+				$("#comfirm_join").prop('disabled', false);
+				$("#comfirm_join").off("click");
 				$("#modal_label_change").text("Project is Private (password required)")
 				$(".modal-body").html('<div class="input-group mb-3"><div class="input-group-prepend">' +
 					'<span class="input-group-text">Enter Password</span></div>'+
@@ -447,58 +448,6 @@
 			 	$('#modal_join').modal('show');
 			// });
 		});
-		// $( ".btn_join_project" ).on( "click", function() {
-		// 	var project_id = $(this).attr("data-project-id");
-		// 	var access = $(this).attr("data-access");
-		// 	if (access == "Private"){
-		// 		$("#modal_label_change").text("Project is Private (password required)")
-		// 		$(".modal-body").html('<div class="input-group mb-3"><div class="input-group-prepend">' +
-		// 			'<span class="input-group-text">Enter Password</span></div>'+
-		// 			'<input id="password" name = "password_enter" type="password" class="form-control" placeholder="Password"' +
-		// 			'aria-label="Password" aria-describedby="basic-addon1"></div>')
-		// 			$("#comfirm_join").on("click", function(){
-		// 				var password = $("#password").val()
-		// 				$.post("{{url_for('project_list')}}", {d_action:"insert_password_private", project_id :project_id, access: access, pass: password }, function(result) {
-		// 					if (result.data == "success"){
-		// 						location.reload();
-		// 					}else{
-		// 						$(".msg-alert").html('<div class="alert alert-danger" role="alert">The password is wrong</div>').fadeIn().delay(1000).fadeOut();
-		// 						$("#password").val("")
-		// 					}
-		// 				}, "json");
-		// 			})
-		// 	}else if (access == "Public (Request)"){
-		// 			$("#modal_label_change").text("Project need to approve by Admin")
-		// 			$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
-		// 			$.post("{{url_for('project_list')}}", {d_action:"request_exist", project_id :project_id}, function(result) {
-		// 					if(result.data == "exist"){
-		// 						$(".modal-body").html('<p>You already request to join, Please wait until Project manager accept your request</p>')
-		// 						$("#comfirm_join").prop('disabled', true);
-		// 					}else{
-		// 						$(".modal-body").html('<p>Click Join button and we will inform the project manager</p>')
-		// 						$("#comfirm_join").prop('disabled', false);
-		// 					}
-		// 				}, "json");
-		// 			$("#comfirm_join").on("click", function(){
-		// 				$.post("{{url_for('project_list')}}", {d_action:"insert_noti", project_id :project_id, access: access}, function(result) {
-		// 					if (result.data == "success"){
-		// 						location.reload();
-		// 					}
-		// 				}, "json");
-		// 			})
-		// 		}else{
-		// 			$("#modal_label_change").text("Aavaible Join Project")
-		// 			$(".modal-body").html('<p>Click Join button to join this project</p>')
-		// 			$.post("{{url_for('project_list')}}", {d_action:"join_public_project", project_id :project_id}, function(result) {
-		// 					if (result.data == "success"){
-		// 						location.reload();
-		// 					}
-		// 				}, "json");
-					
-		// 		}
-
-		// 	$('#modal_join').modal('show');
-		// } );
 	});
 	</script>
 

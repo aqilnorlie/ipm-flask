@@ -316,11 +316,12 @@ def dashboard():
                     d.name duration, st.name status
                     FROM ipm_specification s
                     JOIN ipm_scope c ON s.scope_id = c.id
+                    JOIN ipm_project p on p.id = c.project_id
                     JOIN ipm_user u ON u.id = s.assigned_user_id
                     JOIN ipm_ref_status st ON st.id = s.status_id
                     JOIN ipm_ref_duration d ON d.id = s.duration_id
-
-                    """
+                    WHERE p.id = :1
+                    """,(project_id,)
                 )
                 columns = [col[0] for col in cur.description]
                 cur.rowfactory = lambda *args: dict(zip(columns, args))
